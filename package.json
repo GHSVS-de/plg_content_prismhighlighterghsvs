@@ -32,7 +32,7 @@
 		"prismjs"
 	],
 	"private": false,
-	"description": "Joomla plugin. Syntax highlightning of code snippets. Uses library prism.js with some plugins.",
+	"description": "Joomla content plugin. Syntax highlightning of code snippets. Uses JS library Prismjs. Uses PHP library laminas/laminas-dom.",
 	"license": "GPL-3.0",
 	"repository": {
 		"type": "git",
