@@ -4,7 +4,9 @@
 
 ## Build + new release
 - Run composer if update for laminas/laminas.
-- Run npm install if updates for prismjs
+
+- Run ncu and ncu -u to bump versions if updates for prismjs. 
+- Run npm install
 - Adapt package.json (infos like version of Joomla plugin).
 - run node build.js.
 
