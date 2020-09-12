@@ -1,0 +1,183 @@
+{
+	"thisFileComment" : "Basis für Feld PrismJsPluginsTable, wo Plugin-Infos für Benutzer angezeigt werden. NOCH NICHT FERTIG abgesehen von ersten paar Einträgen.",
+	"thisFileSettings" : {
+		"canDetectComment": "Das Joomla-Plugin kann selbst erkennen?",
+		"configureJsComment": "jS Muss zusätzlich konfig.werden? 1: ja, immer|2: optional",
+		"customCssComment": "Nutzer muss eigenes CSS bereitstellen.",
+		"noCSSComment": "0: Plugin hat/lädt eigenes CSS. 1: hat/lädt keines"
+	},
+    "autolinker": {
+        "title": "Autolinker",
+				
+        "canDetect": 0,
+				"configureJs": 0,
+				
+				"customCss": 0,
+        "noCSS": 0
+    },
+    "custom-class": {
+        "title": "Custom Class",
+        "canDetect": 0,
+				"configureJs": 1,
+				"customCss": 1,
+        "noCSS": 1
+    },
+    "normalize-whitespace": {
+        "title": "Normalize Whitespace",
+        "canDetect": 0,
+				"configureJs": 1,
+				"customCss": 0,
+        "noCSS": 0
+    },
+
+    "line-highlight": {
+        "title": "Line Highlight",
+        "description": "Highlights specific lines and\/or line ranges.",
+        "noCSS": 0
+    },
+    "line-numbers": {
+        "title": "Line Numbers",
+        "description": "Line number at the beginning of code lines.",
+        "noCSS": 0
+    },
+    "show-invisibles": {
+        "title": "Show Invisibles",
+        "description": "Show hidden characters such as tabs and line breaks.",
+        "optional": [
+            "autolinker",
+            "data-uri-highlight"
+        ],
+        "noCSS": 0
+    },
+
+    "wpd": {
+        "title": "WebPlatform Docs",
+        "description": "Makes tokens link to <a href=\"https:\/\/webplatform.github.io\/docs\/\">WebPlatform.org documentation<\/a>. The links open in a new tab.",
+        "noCSS": 0
+    },
+
+    "file-highlight": {
+        "title": "File Highlight",
+        "description": "Fetch external files and highlight them with Prism. Used on the Prism website itself.",
+        "noCSS": true
+    },
+    "show-language": {
+        "title": "Show Language",
+        "description": "Display the highlighted language in code blocks (inline code does not show the label).",
+        "noCSS": true,
+        "require": "toolbar",
+        "requirePlugins": [
+            "toolbar"
+        ]
+    },
+    "jsonp-highlight": {
+        "title": "JSONP Highlight",
+        "description": "Fetch content with JSONP and highlight some interesting content (e.g. GitHub\/Gists or Bitbucket API).",
+        "noCSS": true
+    },
+    "highlight-keywords": {
+        "title": "Highlight Keywords",
+        "description": "Adds special CSS classes for each keyword matched in the code. For example, the keyword <code>if<\/code> will have the class <code>keyword-if<\/code> as well. You can have fine grained control over the appearance of each keyword by providing your own CSS rules.",
+        "noCSS": true
+    },
+    "remove-initial-line-feed": {
+        "title": "Remove initial line feed",
+        "description": "Removes the initial line feed in code blocks.",
+        "noCSS": true
+    },
+    "inline-color": {
+        "title": "Inline color",
+        "description": "Adds a small inline preview for colors in style sheets.",
+        "require": "css-extras",
+        "noCSS": 0,
+        "requireLanguages": [
+            "css-extras",
+            "css"
+        ]
+    },
+    "previewers": {
+        "title": "Previewers",
+        "description": "Previewers for angles, colors, gradients, easing and time.",
+        "require": "css-extras",
+        "noCSS": 0,
+        "requireLanguages": [
+            "css-extras",
+            "css"
+        ]
+    },
+    "autoloader": {
+        "title": "Autoloader",
+        "description": "Automatically loads the needed languages to highlight the code blocks.",
+        "noCSS": true
+    },
+    "keep-markup": {
+        "title": "Keep Markup",
+        "description": "Prevents custom markup from being dropped out during highlighting.",
+        "optional": "normalize-whitespace",
+        "noCSS": true
+    },
+    "command-line": {
+        "title": "Command Line",
+        "description": "Display a command line with a prompt and, optionally, the output\/response from the commands.",
+        "noCSS": 0
+    },
+    "unescaped-markup": {
+        "title": "Unescaped Markup",
+        "description": "Write markup without having to escape anything.",
+        "noCSS": 0
+    },
+
+    "data-uri-highlight": {
+        "title": "Data-URI Highlight",
+        "description": "Highlights data-URI contents.",
+        "noCSS": true
+    },
+    "toolbar": {
+        "title": "Toolbar",
+        "description": "Attach a toolbar for plugins to easily register buttons on the top of a code block.",
+        "noCSS": 0
+    },
+    "copy-to-clipboard": {
+        "title": "Copy to Clipboard Button",
+        "description": "Add a button that copies the code block to the clipboard when clicked.",
+        "require": "toolbar",
+        "noCSS": true,
+        "requireVendorJs": "clipboard\/clipboard",
+        "requirePlugins": [
+            "toolbar"
+        ]
+    },
+    "download-button": {
+        "title": "Download Button",
+        "description": "A button in the toolbar of a code block adding a convenient way to download a code file.",
+        "require": "toolbar",
+        "noCSS": true,
+        "requirePlugins": [
+            "toolbar"
+        ]
+    },
+    "match-braces": {
+        "title": "Match braces",
+        "description": "Highlights matching braces.",
+        "noCSS": 0
+    },
+    "diff-highlight": {
+        "title": "Diff Highlight",
+        "description": "Highlights the code inside diff blocks.",
+        "require": "diff",
+        "noCSS": 0,
+        "requireLanguages": [
+            "diff"
+        ]
+    },
+    "filter-highlight-all": {
+        "title": "Filter highlightAll",
+        "description": "Filters the elements the <code>highlightAll<\/code> and <code>highlightAllUnder<\/code> methods actually highlight.",
+        "noCSS": true
+    },
+    "treeview": {
+        "title": "Treeview",
+        "description": "A language with special styles to highlight file system tree structures.",
+        "noCSS": 0
+    }
+}

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.9" type="plugin" group="content" method="upgrade">
+	<name>{{nameUpper}}</name>
+	<author>{{authorName}}</author>
+	<creationDate>{{creationDate}}</creationDate>
+	<copyright>{{copyright}}</copyright>
+	<license>{{licenseLong}}</license>
+	<authorUrl>{{authorUrl}}</authorUrl>
+	<version>{{version}}</version>
+	<description>{{nameUpper}}_XML_DESC</description>
+
+	<versionHistory>
+		https://updates.ghsvs.de/changelog.php?file={{name}}
+	</versionHistory>
+
+	<updateservers><server type="extension" priority="1" name="{{nameUpper}}">https://raw.githubusercontent.com/GHSVS-de/upadateservers/master/{{name}}-update.xml</server></updateservers>
+
+	<changelogurl>https://raw.githubusercontent.com/GHSVS-de/upadateservers/master/{{name}}-changelog.xml</changelogurl>
+	
+	<infourl>https://github.com/GHSVS-de/{{name}}/blob/master/README.md</infourl>
+
+	<scriptfile>installerScript.php</scriptfile>
+	<minimumPhp>{{minimumPhp}}</minimumPhp>
+	<maximumPhp>{{maximumPhp}}</maximumPhp>
+	<minimumJoomla>{{minimumJoomla}}</minimumJoomla>
+	<maximumJoomla>{{maximumJoomla}}</maximumJoomla>
+	<allowDowngrades>{{allowDowngrades}}</allowDowngrades>
+
+	<files>
+		<filename plugin="prismhighlighterghsvs">prismhighlighterghsvs.php</filename>
+		<folder>fields</folder>
+		<folder>Helper</folder>
+		<folder>language</folder>
+		<folder>layouts</folder>
+		<folder>myforms</folder>
+		<folder>vendor</folder>
+		<filename>installerScript.php</filename>
+		<filename>LICENSE.txt</filename>
+	</files>
+
+	<media destination="{{name}}" folder="media">
+		<folder>css</folder>
+		<folder>js</folder>
+		<folder>json</folder>
+		<folder>prismjs</folder>
+	</media>
+
+	<config>
+
+		<fields name="params" addfieldpath="plugins/content/prismhighlighterghsvs/fields">
+
+			<fieldset name="thanks" label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FIELDSET_TANKS_AND_LICENSES">
+				<field name="spacerthanks" type="plgContentPrismHighlighterGhsvs.longdescription"
+					descriptiontext="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_SPACERTHANKS"
+					hidden="true"
+					additionalClass="thanks" />
+			</fieldset><!--/thanks-->
+
+			<fieldset name="long_description"
+				label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FIELDSET_LONG_DESCRIPTION">
+
+				<field name="version" type="plgContentPrismHighlighterGhsvs.version"
+					label="JVERSION"
+					description=""/>
+
+				<field name="long_descriptiomNote" type="plgContentPrismHighlighterGhsvs.longdescription"
+					descriptiontext="{INCLUDE-FILE:Long-Description.html:}"
+					hidden="true"
+					additionalClass="long_descriptiom" />
+
+			</fieldset><!--/long_description-->
+
+			<fieldset name="basic">
+				<field name="assetsbe" type="plgContentPrismHighlighterGhsvs.assetsbe" hidden="true"
+					loadjs="false" loadJQuery="false" loadcss="true" />
+
+				<field name="forceRenewalSpacer" type="note" close="true" class="alert"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL_DESC"/>
+
+				<field name="forceRenewal" type="list" default="0" filter="integer"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL"
+					description="">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+
+				<field name="forceRenewalDaysSpacer" type="note" close="true" class="alert"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL_DAYS"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL_DAYS_DESC"
+					showon="forceRenewal:0"/>
+
+				<field name="forceRenewalDays" type="number" min="0" default="90" filter="integer"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL_DAYS"
+					description=""
+					showon="forceRenewal:0"/>
+			</fieldset>
+
+			<fieldset name="advanced"
+				label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FIELD_LABEL_ADVANCEDPARAMS">
+
+				<field name="theme" type="filelist" default="prism"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_STYLESHEET"
+					description=""
+					filter="\.css$" fileFilter="\.css$"
+					hide_default="true"
+					hide_none="true"
+					stripext="true"
+					directory="media/plg_content_prismhighlighterghsvs/css/prismjs/themes">
+						<option value="">JNONE</option>
+				</field>
+
+				<field name="supportLangSpacer" type="note" close="true" class="alert"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_SUPPORT_LANG"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_SUPPORT_LANG_DESC"/>
+
+				<field name="supportLang" type="list" default="0" filter="integer"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_SUPPORT_LANG"
+					description="">
+						<option value="0">PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_SUPPORT_LANG_0</option>
+						<option value="1">PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_SUPPORT_LANG_1</option>
+						<option value="2">PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_SUPPORT_LANG_2</option>
+				</field>
+
+				<field name="tagsSpacer" type="note" close="true" class="alert"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_TAGS"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_TAGS_DESC"/>
+
+				<field name="tags" type="list" default="1" filter="integer"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_TAGS"
+					description="">
+						<option value="0">CODE tag only</option>
+						<option value="1">PRE and CODE tags</option>
+				</field>
+
+				<field name="howToLoadSpacer" type="note" close="true" class="alert"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_HOWTOLOAD"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_HOWTOLOAD_DESC"/>
+
+				<field name="howToLoad" type="list" default="autoloader" filter="string"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_HOWTOLOAD"
+					description="">
+						<option value="autoloader"/>
+						<option value="combined"/>
+						<option value="singleFile"/>
+				</field>
+
+				<field name="toolbarSpacer" type="note" close="true" class="alert"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_TOOLBAR"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_TOOLBAR_DESC"/>
+
+				<field name="toolbar" multiple="true" type="list" default=""
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_TOOLBAR"
+					description="">
+						<option value="copy-to-clipboard"/>
+						<option value="download-button"/>
+						<option value="show-language"/>
+				</field>
+
+				<field name="userMustSelectSpacer" type="note" close="true" class="alert"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_USERMUSTSELECT"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_USERMUSTSELECT_DESC"/>
+
+				<field name="userMustSelect" type="plgContentPrismHighlighterGhsvs.userMustSelect"
+					multiple="true"
+					userMustSelect="autolinker,data-uri-highlight,highlight-keywords,inline-color,keep-markup,previewers,show-invisibles"
+					default=""
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_USERMUSTSELECT"
+					description="">
+						<!--<option value="">JNONE</option>-->
+				</field>
+			</fieldset><!--/advanced-->
+
+
+			<fieldset name="pluginsConfiguration_1"
+				label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVSPLUGIN_PLUGINSCONFIGURATION_1">
+
+				<field name="PLUGINSCONFIGURATION_1Spacer" type="note" close="true" class="alert"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVSPLUGIN_PLUGINSCONFIGURATION_1"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_PLUGINSCONFIGURATION_1_DESC"/>
+
+				<field name="pluginConfiguration_1" type="subform" min="1" max="100" multiple="true"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_PLUGINCONFIGURATION_1" description=""
+					hiddenLabel="true"
+					formsource="plugins/content/prismhighlighterghsvs/myforms/subform-pluginsConfiguration_1.xml"
+					layout="joomla.form.field.subform.repeatable" groupByFieldset="false"
+				/>
+			</fieldset>
+
+			<fieldset name="pluginsConfiguration_2"
+				label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVSPLUGIN_PLUGINSCONFIGURATION_2">
+
+				<field name="PLUGINSCONFIGURATION_2Spacer" type="note" close="true" class="alert"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVSPLUGIN_PLUGINSCONFIGURATION_2"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_PLUGINSCONFIGURATION_2_DESC"/>
+
+				<field name="pluginConfiguration_2" type="subform" min="0" max="100" multiple="true"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_PLUGINCONFIGURATION_2" description=""
+					hiddenLabel="true"
+					formsource="plugins/content/prismhighlighterghsvs/myforms/subform-pluginsConfiguration_2.xml"
+					layout="joomla.form.field.subform.repeatable" groupByFieldset="false"
+				/>
+			</fieldset>
+
+		</fields>
+
+	</config>
+</extension>

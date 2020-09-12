@@ -1,0 +1,62 @@
+{
+	"name": "plg_content_prismhighlighterghsvs",
+	"version": "2020.09.10",
+	"minimumPhp": "7.3.0",
+	"maximumPhp": "",
+	"minimumJoomla": "3.9.0",
+	"maximumJoomla": "3.10.99999",
+	"allowDowngrades": "1",
+	"creationDate": "2020-09-03",
+	"licenseLong": "GNU General Public License version 3 or later; see LICENSE.txt.",
+	"copyright": "(C) 2020, G@HService Berlin Neukölln, Volkmar Volli Schlothauer.",
+	"author": {
+		"name": "G@HService Berlin Neukölln, Volkmar Volli Schlothauer",
+		"email": "",
+		"url": "https://www.ghsvs.de"
+	},
+	"contributors": [
+		{
+			"name": "G@HService Berlin Neukölln, Volkmar Volli Schlothauer",
+			"email": "",
+			"url": "https://www.ghsvs.de"
+		}
+	],
+	"bugs": "https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs/issues",
+	"homepage": "https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs#readme",
+	"keywords": [
+		"joomla",
+		"system plugin",
+		"syntax highlighter",
+		"code highlighter",
+		"Prism javascript",
+		"prismjs"
+	],
+	"private": false,
+	"description": "Joomla plugin. Syntax highlightning of code snippets. Uses library prism.js with some plugins.",
+	"license": "GPL-3.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs.git"
+	},
+	"scripts": {
+		"g-build": "node build.js",
+		"g-npm-update-check": "ncu",
+		"g-ncu-override-json": "ncu -u"
+	},
+	"dependencies": {
+		"prismjs": "^1.21.0"
+	},
+	"devDependencies": {
+		"adm-zip": "0.4.16",
+		"chalk": "^4.1.0",
+		"commander": "^6.1.0",
+		"fs-extra": "9.0.1",
+		"mkdirp": "^1.0.4",
+		"ncp": "^2.0.0",
+		"path": "^0.12.7",
+		"recursive-readdir": "^2.2.2",
+		"rimraf": "3.0.2"
+	},
+	"peerDependencies": {},
+	"browserslist": []
+}

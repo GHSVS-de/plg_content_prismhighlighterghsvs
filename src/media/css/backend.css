@@ -1,0 +1,29 @@
+.extended-width
+{
+	min-width:90%;
+}
+form.form-validate
+{
+	padding-bottom:250px;
+}
+
+form.form-validate .alert
+{
+	margin-bottom: 0;
+}
+
+textarea.xx-large{min-width: 50%;font-weight:bold}
+#attrib-fieldsetCustomCss [type="text"],
+#attrib-fieldsetCustomCss textarea
+{
+	min-width: 90%;
+}
+#attrib-fieldsetCustomCss .controls
+{
+	margin-left: 0;
+}
+#attrib-fieldsetCustomCss .subform-repeatable-group
+{
+	border-top: 3px solid black;
+	margin-top:5px;
+}
