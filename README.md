@@ -14,10 +14,8 @@
 - New ZIP is in `/dist/`
 - FYI: Packed files for this ZIP can be seen in `/package/`.
 
+- The second version after underscore in zip name is used prismjs version.
+
 #### For Joomla update server
 - Create new release with new tag.
-- Get download link for new `dist/plg_blahaba_blubber...zip` **inside new tag branch** and add to release description and update server XML.
-
-or
-
-- You can add extension ZIP file to "Assets" list via Drag&Drop. See "Attach binaries by dropping them here or selecting them.".
+- Get download link for new `dist/plg_blahaba_blubber...zip` **from newly created tag branch** and add to release description and update server XML.
