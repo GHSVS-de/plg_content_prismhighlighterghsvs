@@ -18,4 +18,4 @@
 
 #### For Joomla update server
 - Create new release with new tag.
-- Get download link for new `dist/plg_blahaba_blubber...zip` **from newly created tag branch** and add to release description and update server XML.
+- Get download link for new `dist/plg_blahaba_blubber...zip` **from newly created tag branch** and add to release description and add to update server XML.
