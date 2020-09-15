@@ -9,6 +9,7 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Registry\Registry;
 use Joomla\CMS\Utility\Utility;
 use Laminas\Dom\Query;
+use Joomla\CMS\Uri\Uri;
 
 class plgContentPrismHighlighterGhsvs extends CMSPlugin
 {
@@ -34,6 +35,12 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		// e.g. file-highlight needs sometimes a language explicitly that can't be detected by autoloader.
 		'mustLanguages' => [],
 		'requireVendorJs' => [],
+	];
+	
+	// Specials: final replacements in article->text
+	protected $replace = [
+		'what' => [],
+		'with' => [],
 	];
 
 	public function onContentPrepare($context, &$article, &$params, $page = 0)
@@ -92,7 +99,11 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 		/* Field 'userMustSelect'. Some Prism plugins cannot be detected 
 		automatically by this Joomla plugin.
-		They do not use specific identifiers in the HTML. */
+		They do not use specific identifiers in the HTML.
+########## Plugin autolinker,data-uri-highlight,highlight-keywords,inline-color,keep-markup,previewers,show-invisibles ##########
+		Plugins like inline-color won't be loaded if there's no
+		content with keyword 'color' in it.
+		*/
 
 		// We need this array earlier than expected.
 		$forced = $this->params->get('userMustSelect', []);
@@ -336,6 +347,14 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 							$this->filesToLoad['requirePlugins'][] = 'toolbar';
 							$this->filesToLoad['plugin'][] = 'download-button';
 						}
+
+						// Add JUri? Not really "perfect" concerning correct matches.
+						if (isset($attribs['data-src-addjuri']))
+						{
+							$this->replace['what'][] = 'data-src="' . $attribs['data-src'][0] . '"';
+							$this->replace['with'][] = 'data-src="' . Uri::root(true) . '/'
+								. $attribs['data-src'][0] . '"';
+						}
 					}
 
 					$collectAttribs = array_merge($collectAttribs, $collectPreAttribs);
@@ -470,8 +489,11 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			}
 			$collectAttribs[$key]['classesAll'] = $classesAll;
 		}
-
-		$this->filesToLoad['css'] = (array) $this->params->get('theme', ['prism']);
+		
+		if ($theme = $this->params->get('theme', 'prism'))
+		{
+			$this->filesToLoad['css'] = (array) $theme;
+		}
 
 ########## Plugin inline-color. Part 2 ##########
 		if ($inlineColorToLoad && !isset($hasColor))
@@ -714,6 +736,8 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		$min = JDEBUG ? '' : '.min';
 		$version = JDEBUG ? time() : 'auto';
 
+		$jsFileName = $cssFileName = [];
+
 		// Identify paths of CSS files.
 		$doCss = [];
 		$cssFileName = [];
@@ -727,10 +751,16 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			foreach ($this->filesToLoad[$what] as $id)
 			{
 				$doCss[] = $this->basepath . '/css/prismjs/' . str_replace('{id}', $id, $path);
-				
-				@$cssFileName['first'][] = strtoupper($what[0]) . $id[0];;
-				@$cssFileName['id'][] = $id;
+				$cssFileName['first'][] = strtoupper($what[0]) . $id[0];;
+				$cssFileName['id'][] = $id;
 			}
+		}
+
+		if ($customCssFile = trim($this->params->get('customCssFile', '')))
+		{
+			$doCss[] = $customCssFile;
+			$cssFileName['first'][] = 'R' . $customCssFile[0];
+			$cssFileName['id'][] = $customCssFile;
 		}
 
 		//sort($combinedFilename, SORT_NATURAL | SORT_FLAG_CASE);
@@ -784,9 +814,8 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			foreach ($this->filesToLoad[$what] as $id)
 			{
 				$doJs[] = str_replace(array('{folder}', '{id}'), array($folder, $id), $path);
-				
-				@$jsFileName['first'][] = strtoupper($what[0]) . $id[0];
-				@$jsFileName['id'][] = $id;
+				$jsFileName['first'][] = strtoupper($what[0]) . $id[0];
+				$jsFileName['id'][] = $id;
 			}
 		}
 
@@ -816,6 +845,11 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			Factory::getDocument()->addScriptDeclaration(
 				';' . implode(";", $this->filesToLoad['scriptDeclaration']) . ';'
 			);
+		}
+		
+		if ($this->replace['what'])
+		{
+			$article->text = str_replace($this->replace['what'], $this->replace['with'], $article->text);
 		}
 echo ' 4654sd48sa7d98sD81s8d71dsa filesToLoad 2 <pre>' . print_r($this->filesToLoad, true) . '</pre>';
 echo ' 4654sd48sa7d98sD81s8d71dsa doJs <pre>' . print_r($doJs, true) . '</pre>';

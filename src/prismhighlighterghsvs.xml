@@ -107,8 +107,13 @@
 					hide_none="true"
 					stripext="true"
 					directory="media/plg_content_prismhighlighterghsvs/css/prismjs/themes">
-						<option value="">JNONE</option>
+						<option value="0">JNONE</option>
 				</field>
+
+				<field type="text" name="customCssFile" filter="string"
+					class="extended-width"
+					label="Custom CSS file (loaded lastly)"
+					hint="e.g. templates/mytmpl/css/blubb.css"/>
 
 				<field name="supportLangSpacer" type="note" close="true" class="alert"
 					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_SUPPORT_LANG"
