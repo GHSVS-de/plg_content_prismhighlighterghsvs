@@ -161,7 +161,12 @@ let deleteFileTypeRec = async (dirPath, fileExtRegEx, options = {}) =>
 		`./src/media/prismjs`,
 		`./src/vendor`,
 		`./package`,
-		`./dist`
+		`./dist`,
+		// Conflicts while upload
+		'./vendor/bin/',
+		'./vendor/matthiasmullie/minify/bin',
+		'./src/vendor/bin/',
+		'./src/vendor/matthiasmullie/minify/bin'
 	];
 
 	for (const file of firstCleanOuts)
