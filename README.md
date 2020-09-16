@@ -3,7 +3,7 @@
 ## Work in (long) progress!!
 
 ## Build + new release
-- Run composer if update for laminas/laminas.
+- Run composer if update for `laminas/laminas` or `matthiasmullie/minify`.
 
 - Run `ncu` and `ncu -u` to bump versions if updates for PrismJS/prism or zenorocha/clipboard.js. 
 - Run npm install

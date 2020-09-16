@@ -3,6 +3,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Uri\Uri;
 
 class PrismHighlighterGhsvsHelper
 {
@@ -438,13 +439,116 @@ class PrismHighlighterGhsvsHelper
 		return self::$loaded['forceRenewal'];
 	}
 
-	public static function getBrushfileAliasesMap($forceRefresh = false)
+	/**
+	 * Special PRE case that never should have a CODE inside.
+	 * And has a file path to load a file.addParams.
+	 *
+	 * @param string $plugin E.g: 'file-highlight', 'jsonp-highlight'.
+	 * @param string $fileAttribute E.g: 'data-src', 'data-jsonp'.
+	 *
+	 * @return boolean TRUE for soemthing found an added to $filesToLoad and so on.
+	*/
+	public static function checkPREWithFile(
+		$plugin,
+		$fileAttribute,
+		$dom,
+		&$collectAttribs,
+		&$filesToLoad,
+		$supportLang,
+		$aliasLanguageMap,
+		&$plgConfigurations,
+		&$replace
+	){
+		$collectPreAttribs = [];
+		/* ToDo: "/" is a compromise because laminas-dom doesn't understand
+		all CSS matches selectors and creates a fatal error if "wrong". */
+		$tags = 'pre[' . $fileAttribute . '*="/"]';
+		$results = $dom->execute($tags);
+
+		if (count($results))
 	{
-		if (self::brushesToFiles($forceRefresh))
+			$key = count($collectAttribs);
+			
+			// $result is always a PRE[data-jsonp] element.
+			foreach ($results as $result)
 		{
-			$content = file_get_contents(JPATH_SITE . '/' . self::$basepath . '/js/_combiByPlugin/brushfileAliasesMap.json');
-			return json_decode($content, true);
+				if ($result->firstChild)
+				{
+					continue;
+				}
+				
+				$key++;
+				$collectPreAttribs[$key]['isInlineCode'] = 0;
+				
+				// Must collect for later further attributes checks.
+				foreach ($result->attributes as $attribute)
+				{
+					$collectPreAttribs[$key][$attribute->name][] = trim($attribute->value);
+				}
+				
+				$filesToLoad['plugin'][] = $plugin;
+				
+				// Shall we load a language. Check Atrributes.
+				foreach ($collectPreAttribs as $key => $attribs)
+				{
+					// Has lang(uage)- class? Nothing to do then.
+					$hasLang = false;
+
+					if (!empty($attribs['class']))
+					{
+						$hasLang = 
+						self::strposCheckForLanguageClass($attribs['class'], $supportLang);
+					}
+
+					// Has no lang(uage)- class. Try to load by file extension (e.g. *.js).
+					if (
+						!$hasLang
+						&& ($ext = strtolower(File::getExt($attribs[$fileAttribute][0])))
+						&& isset($aliasLanguageMap[$ext])
+					){
+						$filesToLoad['mustLanguages'][] = $aliasLanguageMap[$ext]['alias'];
+					}
+					
+					// Add toolbar?
+					if (isset($attribs['data-download-link']))
+					{
+						$filesToLoad['requirePlugins'][] = 'toolbar';
+						$filesToLoad['plugin'][] = 'download-button';
+					}
+
+					// Add JUri? Not really "perfect" concerning correct matches.
+					// ToDo: Check for leading / and \, maybe http:
+					if (isset($attribs['data-src-addjuri']))
+					{
+						$replace['what'][] = $fileAttribute . '="' . $attribs['data-src'][0] . '"';
+						$replace['with'][] = $fileAttribute . '="' . Uri::root(true) . '/'
+							. $attribs['data-src'][0] . '"';
 		}
+				} // foreach($collectPreAttribs
+			} // foreach results
+		} //if (count($results))
+			
+		if (!$collectPreAttribs)
+		{
+			unset($plgConfigurations[$plugin]);
 		return false;
 	}
+
+		$collectAttribs = \array_merge($collectAttribs, $collectPreAttribs);
+		return true;
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

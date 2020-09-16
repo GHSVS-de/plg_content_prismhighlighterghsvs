@@ -1,5 +1,6 @@
 {
     "require": {
-        "laminas/laminas-dom": "^2"
+        "laminas/laminas-dom": "^2",
+				"matthiasmullie/minify": "^1"
     }
 }

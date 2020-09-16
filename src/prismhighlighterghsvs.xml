@@ -142,7 +142,7 @@
 					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_HOWTOLOAD"
 					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_HOWTOLOAD_DESC"/>
 
-				<field name="howToLoad" type="list" default="autoloader" filter="string"
+				<field name="howToLoad" type="list" default="combined" filter="string"
 					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_HOWTOLOAD"
 					description="">
 						<option value="autoloader"/>
