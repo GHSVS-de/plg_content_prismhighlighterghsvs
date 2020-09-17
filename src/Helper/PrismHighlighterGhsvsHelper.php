@@ -349,6 +349,11 @@ class PrismHighlighterGhsvsHelper
 					{
 						Folder::delete($root . $item);
 					}
+					
+					if (!is_dir($root . $item))
+					{
+						Folder::create($root . $item);
+					}
 				}
 	
 				$forceRenewals = [
@@ -538,6 +543,26 @@ class PrismHighlighterGhsvsHelper
 		return true;
 	}
 
+	/**
+	* Unload plugins if no needed language will be loaded.
+	*
+	* @param array $languages E.g. [css,scss,markup]. One language must be loaded.
+	*/
+	public static function checkPluginWithLanguageDependency(
+		$plugin,
+		$languages,
+		&$filesToLoad
+	){
+		if (
+			($arrayKeys = \array_keys($filesToLoad['plugin'], $plugin))
+			&& !\array_intersect(
+				$languages,
+				$filesToLoad['language']
+			)
+		){
+			unset($filesToLoad['plugin'][ $arrayKeys[0] ]);
+		}
+	}
 }
 
 

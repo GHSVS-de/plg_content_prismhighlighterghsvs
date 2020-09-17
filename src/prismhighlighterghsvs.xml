@@ -78,6 +78,11 @@
 					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL"
 					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL_DESC"/>
 
+				<field name="forceRenewalSpacer2" type="note" close="true"
+					class="alert alert-danger"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL_ALERT"/>
+
 				<field name="forceRenewal" type="list" default="0" filter="integer"
 					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL"
 					description="">
@@ -109,6 +114,10 @@
 					directory="media/plg_content_prismhighlighterghsvs/css/prismjs/themes">
 						<option value="0">JNONE</option>
 				</field>
+
+				<field name="customCssFileSpacer" type="note" close="true" class="alert"
+					label="Custom CSS file (loaded lastly)"
+					description="Enter a relative path of a CSS file. The $template placeholder will be replaced by the active template name in frontend. E.g. 'templates/$template/css/prism-ghsvs.css'."/>
 
 				<field type="text" name="customCssFile" filter="string"
 					class="extended-width"
@@ -168,7 +177,7 @@
 
 				<field name="userMustSelect" type="plgContentPrismHighlighterGhsvs.userMustSelect"
 					multiple="true"
-					userMustSelect="autolinker,data-uri-highlight,highlight-keywords,inline-color,keep-markup,previewers,show-invisibles"
+					userMustSelect="autolinker,data-uri-highlight,highlight-keywords,inline-color,keep-markup,previewers,show-invisibles,wpd"
 					default=""
 					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_USERMUSTSELECT"
 					description="">

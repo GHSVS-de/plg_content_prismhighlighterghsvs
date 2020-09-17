@@ -10,6 +10,7 @@ use Joomla\Registry\Registry;
 use Joomla\CMS\Utility\Utility;
 use Laminas\Dom\Query;
 use Joomla\CMS\Uri\Uri;
+use MatthiasMullie\Minify;
 
 class plgContentPrismHighlighterGhsvs extends CMSPlugin
 {
@@ -262,7 +263,6 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 ########## Plugin unescaped-markup ##########
 						/* Is a #comment (in HTML "<!--...-->") and no other
 						DOM elements after? */
-
 						if (
 							$result->firstChild->nodeType === 8
 							&& !$result->firstChild->nextSibling
@@ -297,7 +297,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		if($hasPRE)
 		{
 ########## Plugin file-highlight ##########
-			PrismHighlighterGhsvsHelper::checkPREWithFile(
+			$fileHighlightFound = PrismHighlighterGhsvsHelper::checkPREWithFile(
 				'file-highlight',
 				'data-src',
 				$dom,
@@ -323,7 +323,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				$this->replace
 			);
 ########## /Plugin jsonp-highlight ##########
-			}
+		}
 
 		// Nothing to do.
 		if (!$collectAttribs)
@@ -441,13 +441,18 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				{
 					$this->filesToLoad['plugin'][] = 'match-braces';
 				}
-
-
 ########## /Plugin match-braces ##########
 
 			// Only <pre><code> combinations.
 			if ($attribs['isInlineCode'] === 0)
 			{
+
+########## Plugin treeview ##########
+				if (strpos($classesAll, ' language-treeview ') !== false)
+				{
+					$this->filesToLoad['plugin'][] = 'treeview';
+				}
+########## /Plugin treeview ##########
 
 ########## Plugin diff-highlight ##########
 				// It has a class like language-diff-javascript?
@@ -625,7 +630,27 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			}
 		}
 
-		// House cleaning. ToDo: Better if later?
+		$this->filesToLoad['plugin'] = 
+			\array_merge(
+				$this->filesToLoad['requirePlugins'],
+				$this->filesToLoad['plugin']
+		); 
+		// ToDo: For easier debugging. Remove?
+		unset($this->filesToLoad['requirePlugins']);
+
+		$this->filesToLoad['language'] = 
+			\array_merge(
+				$this->filesToLoad['requireJs'],
+				$this->filesToLoad['requireLanguages'],
+				$this->filesToLoad['language']
+		);
+		// ToDo: For easier debugging. Remove?
+		unset(
+			$this->filesToLoad['requireJs'],
+			$this->filesToLoad['requireLanguages']
+		);
+
+		// House cleaning.
 		foreach ($this->filesToLoad as $key => $values)
 		{
 			if ($values)
@@ -633,12 +658,55 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				$this->filesToLoad[$key] = \array_unique($this->filesToLoad[$key]);
 			}
 		}
-		
+
+########## Plugin previewers. Unload? ##########
+		// "This plugin is compatible with CSS, Less, Markup attributes, Sass, Scss and Stylus."
+		PrismHighlighterGhsvsHelper::checkPluginWithLanguageDependency(
+			'previewers',
+			['css', 'less', 'markup', 'sass', 'scss', 'stylus'],
+			$this->filesToLoad
+		);
+########## /Plugin previewers ##########
+
+########## Plugin wpd. Unload? ##########
+		/* This plugin is compatible with CSS, SCSS, Markup.
+		It adds links like https://webplatform.github.io/docs/css/atrules/import/
+		to some keywords. */
+		PrismHighlighterGhsvsHelper::checkPluginWithLanguageDependency(
+			'wpd',
+			['css', 'scss', 'markup'],
+			$this->filesToLoad
+		);
+########## /Plugin wpd ##########
+
+########## Plugin download-button. Unload? ##########
+		if (
+			!$fileHighlightFound
+			&& ($arrayKeys = \array_keys($this->filesToLoad['plugin'], 'download-button'))
+		){
+			unset($this->filesToLoad['plugin'][$arrayKeys[0]]);
+		}
+########## /Plugin download-button ##########
+
+########## Plugin toolbar. Unload? ##########
+		if (
+			($arrayKeys = \array_keys($this->filesToLoad['plugin'], 'toolbar'))
+			&& !\in_array('download-button', $this->filesToLoad['plugin'])
+			&& !\in_array('copy-to-clipboard', $this->filesToLoad['plugin'])
+		){
+			unset(
+				$this->filesToLoad['plugin'][$arrayKeys[0]],
+				$this->filesToLoad['requireCss'][$arrayKeys[0]]
+			);
+		}
+########## /Plugin toolbar ##########
+
 		$min = JDEBUG ? '' : '.min';
 		$version = JDEBUG ? time() : 'auto';
 		$jsFileName = $cssFileName = $doCss = $doJs = [];
 
 		// Identify paths of CSS files.
+
 		$paths = [
 			'css' => 'themes/{id}.css',
 			'requireCss' => 'plugins/{id}/prism-{id}.css',
@@ -656,38 +724,10 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 		if ($customCssFile = trim($this->params->get('customCssFile', '')))
 		{
-			$doCss[] = $customCssFile;
+			$doCss[] = str_replace('$template', $this->app->getTemplate(), $customCssFile);
 			$cssFileName['first'][] = 'R' . $customCssFile[0];
 			$cssFileName['id'][] = $customCssFile;
 		}
-
-		$this->filesToLoad['plugin'] = \array_unique(
-			\array_merge(
-				$this->filesToLoad['requirePlugins'],
-				$this->filesToLoad['plugin']
-			)
-		); 
-		
-		$this->filesToLoad['language'] = \array_unique(
-			\array_merge(
-				$this->filesToLoad['requireJs'],
-				$this->filesToLoad['requireLanguages'],
-				$this->filesToLoad['language']
-			)
-		);
-
-########## Plugin previewers ##########
-		// "This plugin is compatible with CSS, Less, Markup attributes, Sass, Scss and Stylus."
-		if (
-			\in_array('previewers', $this->filesToLoad['plugin'])
-			&& !\array_intersect(
-				['css', 'less', 'markup', 'sass', 'scss', 'stylus'],
-				$this->filesToLoad['language']
-			)
-		){
-			unset($this->filesToLoad['plugin']['previewers']);
-		}
-########## /Plugin previewers ##########
 
 		// Identify paths of JS files.
 		
@@ -696,10 +736,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 		$paths = [
 			'requireVendorJs' => $this->basepath . '{folder}/{id}' . $min . '.js',
-			// 'requireJs' => 'components/prism-{id}' . $min . '.js',
-			// 'requireLanguages' => 'components/prism-{id}' . $min . '.js',
 			'language' => $this->basepath . '{folder}/prismjs/components/prism-{id}' . $min . '.js',
-			// 'requirePlugins' => 'plugins/{id}/prism-{id}' . $min . '.js',,
 			'plugin' => $this->basepath . '{folder}/prismjs/plugins/{id}/prism-{id}' . $min . '.js',
 		];
 
@@ -712,64 +749,103 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				$jsFileName['id'][] = $id;
 			}
 		}
-//ToDo: Minify css files before or after combine.
+		
+		$imploder = '';
+
+		if (!$min)
+		{
+			$imploder = "\n";
+		}
+
+		$this->filesToLoad['scriptDeclaration'] =
+			implode($imploder, $this->filesToLoad['scriptDeclaration']) . ';';
+
 		if ($howToLoad === 'combined')
 		{
-			// Sort for file names only(!)? Doesn't match the ordering of combined files.
-		sort($jsFileName['id'], SORT_NATURAL | SORT_FLAG_CASE);
-		sort($cssFileName['id'], SORT_NATURAL | SORT_FLAG_CASE);
-		sort($jsFileName['first'], SORT_NATURAL | SORT_FLAG_CASE);
-		sort($cssFileName['first'], SORT_NATURAL | SORT_FLAG_CASE);
-		
-			$cssFileName = implode('', $cssFileName['first']) . '_' . md5(implode('_', $cssFileName['id'])) . $min . '.css';
-		$jsFileName = implode('', $jsFileName['first']) . '_' . md5(implode('_', $jsFileName['id'])) . $min . '.js';
+				// Sort for file names only(!)? Doesn't match the ordering of combined files.
+			sort($jsFileName['id'], SORT_NATURAL | SORT_FLAG_CASE);
+			sort($cssFileName['id'], SORT_NATURAL | SORT_FLAG_CASE);
+			sort($jsFileName['first'], SORT_NATURAL | SORT_FLAG_CASE);
+			sort($cssFileName['first'], SORT_NATURAL | SORT_FLAG_CASE);
+			
+			$cssFileName = md5(implode('', $cssFileName['first'])) . '_'
+				. md5(implode('_', $cssFileName['id'])) . $min . '.css';
+			$jsFileName = md5(implode('', $jsFileName['first'])) . '_'
+				. md5(implode('_', $jsFileName['id']) . $this->filesToLoad['scriptDeclaration'])
+				. $min . '.js';
+	
+			$cssFileRel = $this->basepath . '/css/_combiByPlugin/' . $cssFileName;
+			$jsFileRel = $this->basepath . '/js/_combiByPlugin/' . $jsFileName;
+			$cssFileAbs = JPATH_SITE . '/' . $this->basepath . '/css/_combiByPlugin/' . $cssFileName;
+			$jsFileAbs = JPATH_SITE . '/' . $this->basepath . '/js/_combiByPlugin/' . $jsFileName;
 
-			$cssFileName = $this->basepath . '/css/_combiByPlugin/' . $cssFileName;
-			$jsFileName = $this->basepath . '/js/_combiByPlugin/' . $jsFileName;
-
-			$contents = array();
-
-/*return;
-
-
-			foreach ($doCss as $file)
+			if (!is_file($cssFileAbs))
 			{
-				// File or override exists?
-				$fileExist = HTMLHelper::_('script',
-					$this->basepath . '/' . $file,
-					array('relative' => true, 'pathOnly' => true)
-				);
-
-				if ($fileExist)
+				if ($min)
 				{
-					$contents[] = file_get_contents(JPATH_SITE . $fileExist);
-				}
-				// Forget combining.
-				else
-				{
-					$combineSuccess = 0;
-					$contents = false;
-					break;
-				}
-			}
-
-			if ($contents)
-			{
-				$contents = implode(";\n;", $contents);
-
-				if (
-					File::write(JPATH_SITE . '/media/' . $this->basepath . '/js/' . $combinedFilename, $contents)
-				){
-					// We just need 1 file now. The combined one.
-					$brushFiles = array($combinedFilename);
-					$combineSuccess = 1;
+					$minifier = new Minify\CSS();
+					
+					// 0:Protection against image embedding and shit.
+					$minifier->setMaxImportSize(0);
+			
+					foreach ($doCss as $file)
+					{
+						$minifier->add(JPATH_SITE . '/' . $file);
+					}
+					
+					$minifier->minify($cssFileAbs);
 				}
 				else
 				{
-					$combineSuccess = 0;
+					$contents = [];
+	
+					foreach ($doCss as $file)
+					{
+						$currentFile = JPATH_SITE . '/' . $file;
+	
+						if (is_file($currentFile))
+						{
+							$contents[] = "/*\n" . $file . "\n*/";
+							$contents[] = file_get_contents($currentFile);
+						}
+					}
+					file_put_contents($cssFileAbs, implode("\n", $contents));
 				}
 			}
-			echo ' 4654sd48sa7d98sD81s8d71dsa <pre>' . print_r($doCss, true) . '</pre>';exit;*/
+			
+			$doCss = [$cssFileRel];
+			
+			if (!is_file($jsFileAbs))
+			{
+				$contents = [];
+	
+				foreach ($doJs as $file)
+				{
+					$currentFile = JPATH_SITE . '/' . $file;
+	
+					if (is_file($currentFile))
+					{
+						$contents[] = "/*\n" . $file . "\n*/";
+						$contents[] = file_get_contents($currentFile);
+					}
+				}
+				
+				if ($this->filesToLoad['scriptDeclaration'])
+				{
+					if ($min)
+					{
+						$minifier = new Minify\JS($this->filesToLoad['scriptDeclaration']);
+						$this->filesToLoad['scriptDeclaration'] = $minifier->minify();
+					}
+
+					$contents[] = "/*\n Plugins Configurations \n*/";
+					$contents[] = $this->filesToLoad['scriptDeclaration'];
+				}
+
+				file_put_contents($jsFileAbs, implode(";\n", $contents));
+			}
+	
+			$doJs = [$jsFileRel];
 		}
 
 		foreach ($doCss as $file)
@@ -782,10 +858,10 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			HTMLHelper::_('script', $file);
 		}
 		
-		if ($this->filesToLoad['scriptDeclaration'])
+		if($howToLoad !== 'combined' && $this->filesToLoad['scriptDeclaration'])
 		{
 			Factory::getDocument()->addScriptDeclaration(
-				';' . implode(";", $this->filesToLoad['scriptDeclaration']) . ';'
+				$this->filesToLoad['scriptDeclaration']. ';'
 			);
 		}
 		
@@ -793,267 +869,5 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		{
 			$article->text = str_replace($this->replace['what'], $this->replace['with'], $article->text);
 		}
-echo ' 4654sd48sa7d98sD81s8d71dsa filesToLoad 2 <pre>' . print_r($this->filesToLoad, true) . '</pre>';
-echo ' 4654sd48sa7d98sD81s8d71dsa doJs <pre>' . print_r($doJs, true) . '</pre>';
-echo ' 4654sd48sa7d98sD81s8d71ds doCss a <pre>' . print_r($doCss, true) . '</pre>';
-
-
-
-return;
-
-
-
-
-		
-################return;		
-
-		
-		
-/**
-autolinker: Done mit userMustSelect Feld.
-'dependencies' => language-Klasse.
-'Inline' => 1,
-'PluginCanDetect' => 0,
-'userMustSelect' => 1
-
-command-line:
-'Inline' => 0,
-'PluginCanDetect' => 1,
-'identifier' => '<pre class="command-line"',
-'attributes' => data-user="", data-host="", data-prompt?"", data-output=""
-
-copy-to-clipboard: Über toolbar-Feld erledigt
-
-custom-class:
-'Inline' => 1,
-'PluginCanDetect' => 0,
-'userMustSelect' => 1,
-'userMustConfigure' => 1 (see https://prismjs.com/plugins/custom-class/),
-
-data-uri-highlight:
-'Inline' => 1,
-'PluginCanDetect' => 0 (weiß nicht genau, ob nur auf bestimmte language-xyz lauscht,
-'userMustSelect' => 1,
-'requireOthers' => 'autolinker' Wohl kein muss, wird aber im Plugin-Code erwähnt.
-
-diff-highlight:
-'Inline' => 1,
-'PluginCanDetect' => nicht immer,
-
-
-copy-to-clipboard: Über toolbar-Feld erledigt
-
-filter-highlight-all: noch großes ????
-'Inline' => 1,
-'PluginCanDetect' => 0,
-'userMustSelect' => 1,
-'userMustConfigure' => 1 (see https://prismjs.com/plugins/filter-highlight-all/),
-
-
-
-
-
-keep-markup:  Done mit userMustSelect Feld.
-
-match-braces:
-'Inline' => 0,
-'PluginCanDetect' => 1,
-'dependencies' => language-Klasse sowie Klasse match-braces
-'hint': Klasse im CODE haben bei mir nicht funktioniert, wenn kein <pre> drumrum ist.
-<pre><code class="language-xxxx match-braces">...</code></pre>
-
-
-
-treeview: Weiß noch nicht.
-
-wpd: Keine Ahnung.
-
-*/
-
-############return;
-		$combine = $this->params->get('combine', 1);
-
-		/*
-		$muster   = array();
-		$muster[] = '/';
-		$muster[] = $tag_;
-		$muster[] = '\s+class=("|\'|)brush:([a-zA-Z0-9#]+)';
-		$muster[] = '/';
-		$muster   = implode('', $muster);
-		*/
-
-		$muster = '/' . $tag_ . '\s+class=("|\'|)brush:([a-zA-Z0-9#]+)' . '/';
-
-		if (!preg_match_all($muster, $article->text, $neededBrushes))
-		{
-			return;
-		}
-
-		$neededBrushes = array_flip($neededBrushes[2]);
-
-		$config = array();
-		$combineSuccess = 0;
-		$min = JDEBUG ? '' : '.min';
-		$version = JDEBUG ? time() : 'auto';
-
-		JLoader::register('PrismHighlighterGhsvsHelper', __DIR__ . '/helper.php');
-
-		$aliasesBrushfileMap = PrismHighlighterGhsvsHelper::getAliasesBrushfileMap();
-
-		// Fatal error.
-		if ($aliasesBrushfileMap === false)
-		{
-			return;
-		}
-
-		// Needed brushes in current article.
-		/*
-		Array
-		(
-    [php] => shBrushPhp
-    [text] => shBrushPlain
-    [xml] => shBrushXml
-		)
-		*/
-		$neededBrushes = array_unique(array_intersect_key($aliasesBrushfileMap, $neededBrushes));
-
-		if (empty($neededBrushes))
-		{
-			return;
-		}
-		
-		// js files that shall be loaded or combined.
-		$brushFiles = array();
-		
-		// parts of filename of combined files. 
-		$combinedFilename = array();
-
-		foreach ($neededBrushes as $alias => $brush)
-		{
-			$combinedFilename[] = trim(ucfirst($alias));
-			$brushFiles[]      = $brush . $min . '.js';
-		}
-
-		// Nothing todo. Maybe error.
-		if (!$brushFiles)
-		{
-			return;
-		}
-		elseif ($combine && $combinedFilename)
-		{
-			sort($combinedFilename, SORT_NATURAL | SORT_FLAG_CASE);
-
-			// Filename for combined bruskes js. E.g. Core_PhpTextXmlBrushes.min.js.
-			$combinedFilename = '_combiByPlugin/' . 'Core_' . implode('', $combinedFilename) . 'Brushes' . $min . '.js';
-
-			// Combined brushes file or override exists?
-			$fileExist = HTMLHelper::_('script',
-				$this->basepath . '/' . $combinedFilename,
-				array('relative' => true, 'pathOnly' => true)
-			);
-			
-			// If it exists it already contains Core and xregexp.
-			if ($fileExist)
-			{
-				// Now we need only this file and can forget other brushes.
-				$brushFiles = array($combinedFilename);
-				$combineSuccess = 1;
-			}
-			// We have to create a new combined file.
-			else
-			{
-				
-			}
-		} // END elseif ($combine && $combinedFilename)
-
-		// Combination not wanted or failed. Load files separately from plugin core.
-		$filesCore = array();
-
-		if (!$combine || !$combineSuccess)
-		{
-			$filesCore = array(
-				'xregexp-2.0.0/xregexp' . $min . '.js',
-				'shCore' . $min . '.js',
-			);
-		}
-		
-		// $brushFiles contains 1 cmbined or several files.
-		foreach (array_merge($filesCore, $brushFiles) as $file)
-		{
-			HTMLHelper::_('script',
-				$this->basepath . '/' . $file,
-				array('relative' => true, 'version' => $version)
-			);
-		}
-
-		// Load configuration JS.
-		if ($this->params->get('stripbrs', 0))
-		{
-			$config[] = 'SyntaxHighlighter.config.stripBrs = true;';
-		}
-
-		$config[] = 'SyntaxHighlighter.config.tagName="' . $tag . '";';
-
-		if (! $this->params->get('auto-links', 0))
-		{
-		 $config[] = 'SyntaxHighlighter.defaults["auto-links"] = false;';
-		}
-
-		if (($cname = trim($this->params->get('class-name', ''))))
-		{
-			$config[] = 'SyntaxHighlighter.defaults["class-name"] = "' . $cname . '";';
-		}
-
-		// Nonsense.
-		$config[] = 'SyntaxHighlighter.defaults["toolbar"] = false;';
-
-		if (! $this->params->get('gutter', 1))
-		{
-			$config[] = 'SyntaxHighlighter.defaults["gutter"] = false;';
-		}
-
-		if (! $this->params->get('quick-code', 1))
-		{
-			$config[] = 'SyntaxHighlighter.defaults["quick-code"] = false;';
-		}
-
- 		$js = implode('', $config) . ';SyntaxHighlighter.all();';
- 		Factory::getDocument()->addScriptDeclaration($js);
-
-		if ($file = $this->params->get('stylesheets', 'shCoreDefault'))
-		{
-			HTMLHelper::_('stylesheet',
-				$this->basepath . '/' . $file . $min . '.css',
-				array('relative' => true, 'version' => $version)
-			);
-		}
-
-		// Custom CSS.
-		$customCssRules = $this->params->get('customCss', null);
-		$css = '';
-
-		if (is_object($customCssRules) && count(get_object_vars($customCssRules)))
-		{
-			foreach ($customCssRules as $customCssRule)
-			{
-				$customCssRule = new Registry($customCssRule);
-
-				if (
-					$customCssRule->get('active', 0)
-					&& ($selector = trim($customCssRule->get('selector', '')))
-					&& ($cssRules = trim($customCssRule->get('cssRules', '')))
-				){
-			  	$css .= $selector . '{' . $cssRules  . '}';
-				}
-			}
-		}
-		
-		if ($css)
-		{
-			$css = str_replace(array("\n", "\r", "\t"), '', $css);
-			Factory::getDocument()->addStyleDeclaration($css);
-		}
-
-		return true;
 	}
 }
