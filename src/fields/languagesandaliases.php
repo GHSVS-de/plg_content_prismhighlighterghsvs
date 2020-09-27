@@ -23,9 +23,9 @@ class JFormFieldLanguagesandaliases extends FormField
 		$title = $this->element['label'] ? (string) $this->element['label'] : ($this->element['title'] ? (string) $this->element['title'] : '');
 		$heading = $this->element['heading'] ? (string) $this->element['heading'] : 'h4';
 
-		\JLoader::register('PrismHighlighterGhsvsHelper', dirname(__DIR__) . '/helper.php');
+		\JLoader::register('PrismHighlighterGhsvs', dirname(__DIR__) . '/helper.php');
 
-		if (($description = \PrismHighlighterGhsvsHelper::getBrushfileAliasesMap()) === false)
+		if (($description = \PrismHighlighterGhsvs::getBrushfileAliasesMap()) === false)
 		{
 			$description = 'Sorry! Fatal error! Reload the page. If error persits it would be nice if you inform the developer of this plugin.';
 		}

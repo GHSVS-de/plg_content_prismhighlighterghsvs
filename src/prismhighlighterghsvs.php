@@ -72,16 +72,16 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		// Why that? Answer: Maybe plugin later also active for modules.
 		if (!isset(self::$loaded['autoload']))
 		{
-			JLoader::register('PrismHighlighterGhsvsHelper', __DIR__ . '/Helper/PrismHighlighterGhsvsHelper.php');
+			JLoader::register('PrismHighlighterGhsvs', __DIR__ . '/Helper/PrismHighlighterGhsvsHelper.php');
 			require __DIR__ . '/vendor/autoload.php';
 			self::$loaded['autoload'] = 1;
 		}
 
 		// Check basic needs:
 		if (
-			PrismHighlighterGhsvsHelper::renewal($this->params) !== true
-			|| !($aliasLanguageMap = PrismHighlighterGhsvsHelper::getAliasLanguageMap())
-			|| !($pluginCssMap = PrismHighlighterGhsvsHelper::getPluginCssMap())
+			PrismHighlighterGhsvs::renewal($this->params) !== true
+			|| !($aliasLanguageMap = PrismHighlighterGhsvs::getAliasLanguageMap())
+			|| !($pluginCssMap = PrismHighlighterGhsvs::getPluginCssMap())
 		){
 			return;
 		}
@@ -297,7 +297,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		if($hasPRE)
 		{
 ########## Plugin file-highlight ##########
-			$fileHighlightFound = PrismHighlighterGhsvsHelper::checkPREWithFile(
+			$fileHighlightFound = PrismHighlighterGhsvs::checkPREWithFile(
 				'file-highlight',
 				'data-src',
 				$dom,
@@ -311,7 +311,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 ########## /Plugin file-highlight ##########
 
 ########## Plugin jsonp-highlight ##########
-			PrismHighlighterGhsvsHelper::checkPREWithFile(
+			PrismHighlighterGhsvs::checkPREWithFile(
 				'jsonp-highlight',
 				'data-jsonp',
 				$dom,
@@ -367,7 +367,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				{
 					// Short check with strpos.
 					$hasLang = 
-					PrismHighlighterGhsvsHelper::strposCheckForLanguageClass($classesAll, $supportLang);
+					PrismHighlighterGhsvs::strposCheckForLanguageClass($classesAll, $supportLang);
 					
 					if ($hasLang)
 					{
@@ -661,7 +661,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 ########## Plugin previewers. Unload? ##########
 		// "This plugin is compatible with CSS, Less, Markup attributes, Sass, Scss and Stylus."
-		PrismHighlighterGhsvsHelper::checkPluginWithLanguageDependency(
+		PrismHighlighterGhsvs::checkPluginWithLanguageDependency(
 			'previewers',
 			['css', 'less', 'markup', 'sass', 'scss', 'stylus'],
 			$this->filesToLoad
@@ -672,7 +672,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		/* This plugin is compatible with CSS, SCSS, Markup.
 		It adds links like https://webplatform.github.io/docs/css/atrules/import/
 		to some keywords. */
-		PrismHighlighterGhsvsHelper::checkPluginWithLanguageDependency(
+		PrismHighlighterGhsvs::checkPluginWithLanguageDependency(
 			'wpd',
 			['css', 'scss', 'markup'],
 			$this->filesToLoad
@@ -848,14 +848,16 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			$doJs = [$jsFileRel];
 		}
 
+		$attribs = ['version' => 'auto'];
+
 		foreach ($doCss as $file)
 		{
-			HTMLHelper::_('stylesheet', $file);
+			HTMLHelper::_('stylesheet', $file, $attribs);
 		}
 
 		foreach ($doJs as $file)
 		{
-			HTMLHelper::_('script', $file);
+			HTMLHelper::_('script', $file, $attribs);
 		}
 		
 		if($howToLoad !== 'combined' && $this->filesToLoad['scriptDeclaration'])

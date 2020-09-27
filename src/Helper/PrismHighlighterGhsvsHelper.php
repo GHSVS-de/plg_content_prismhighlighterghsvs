@@ -5,7 +5,7 @@ use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\File;
 use Joomla\CMS\Uri\Uri;
 
-class PrismHighlighterGhsvsHelper
+class PrismHighlighterGhsvs
 {
 	protected static $basepath = 'media/plg_content_prismhighlighterghsvs';
 	
@@ -477,10 +477,12 @@ class PrismHighlighterGhsvsHelper
 			// $result is always a PRE[data-jsonp] element.
 			foreach ($results as $result)
 		{
-				if ($result->firstChild)
+				// Das ist zu hart. JCE braucht ein &nbsp;, damit er nicht
+				// den gesamten pre-Tag löscht.
+				/*if ($result->firstChild)
 				{
 					continue;
-				}
+				}*/
 				
 				$key++;
 				$collectPreAttribs[$key]['isInlineCode'] = 0;

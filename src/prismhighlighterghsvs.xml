@@ -99,6 +99,17 @@
 					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FORCERENEWAL_DAYS"
 					description=""
 					showon="forceRenewal:0"/>
+
+				<field name="robotsSpacer" type="note" close="true" class="alert"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_ROBOTS"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_ROBOTS_DESC"/>
+
+				<field name="robots" type="list" default="0" filter="integer"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_ROBOTS"
+					description="">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
 			</fieldset>
 
 			<fieldset name="advanced"

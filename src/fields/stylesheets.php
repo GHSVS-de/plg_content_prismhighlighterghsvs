@@ -38,9 +38,9 @@ class plgContentPrismHighlighterGhsvsFormFieldStylesheets extends JFormFieldList
 	 */
 	protected function getOptions()
 	{
-		\JLoader::register('PrismHighlighterGhsvsHelper', dirname(__DIR__) . '/helper.php');
+		\JLoader::register('PrismHighlighterGhsvs', dirname(__DIR__) . '/helper.php');
 		
-		$coreStyleSheets = \PrismHighlighterGhsvsHelper::getCoreStylesheets();
+		$coreStyleSheets = \PrismHighlighterGhsvs::getCoreStylesheets();
 		$hash = md5($this->element);
 
 		if (!isset(static::$options[$hash]))
