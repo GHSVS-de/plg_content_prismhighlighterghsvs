@@ -6,6 +6,8 @@ const mkdirp = require('mkdirp');
 const util = require("util");
 const rimRaf = util.promisify(require("rimraf"));
 
+const Manifest = "./package/prismhighlighterghsvs.xml";
+
 const {
 	author,
 	creationDate,
@@ -273,8 +275,6 @@ let deleteFileTypeRec = async (dirPath, fileExtRegEx, options = {}) =>
 
 	await fse.copy("./src", "./package");
 	await fse.mkdir("./dist");
-
-	let Manifest = "./package/prismhighlighterghsvs.xml";
 
   let xml = await fse.readFile(Manifest, { encoding: "utf8" });
 	xml = xml.replace(/{{name}}/g, name);
