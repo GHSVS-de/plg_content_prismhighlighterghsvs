@@ -43,6 +43,7 @@
 		<folder>js</folder>
 		<folder>json</folder>
 		<folder>prismjs</folder>
+		<filename>renewal.log</filename>
 	</media>
 
 	<config>
