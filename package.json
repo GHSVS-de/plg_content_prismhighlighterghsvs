@@ -1,6 +1,6 @@
 {
 	"name": "plg_content_prismhighlighterghsvs",
-	"version": "2020.09.27",
+	"version": "2020.10.12",
 	"minimumPhp": "7.3.0",
 	"maximumPhp": "",
 	"minimumJoomla": "3.9.0",
@@ -45,7 +45,7 @@
 	},
 	"dependencies": {
 		"clipboard": "^2.0.6",
-		"prismjs": "^1.21.0"
+		"prismjs": "^1.22.0"
 	},
 	"devDependencies": {
 		"adm-zip": "0.4.16",
@@ -54,6 +54,7 @@
 		"fs-extra": "9.0.1",
 		"mkdirp": "^1.0.4",
 		"ncp": "^2.0.0",
+		"npm-check-updates": "^9.0.4",
 		"path": "^0.12.7",
 		"recursive-readdir": "^2.2.2",
 		"rimraf": "3.0.2"
