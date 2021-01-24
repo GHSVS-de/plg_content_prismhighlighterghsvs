@@ -5,6 +5,25 @@
 ## Build + new release
 - Run composer if update for `laminas/laminas` or `matthiasmullie/minify`.
 
+```
+composer outdated
+
+OR
+
+composer show -l
+```
+
+```
+composer install
+```
+
+OR
+(whenever libraries in vendor/ shall be updated)
+
+```
+composer update
+```
+
 - Run `ncu` and `ncu -u` to bump versions if updates for PrismJS/prism or zenorocha/clipboard.js. 
 - Run npm install
 - Adapt package.json (infos like version of Joomla plugin).
