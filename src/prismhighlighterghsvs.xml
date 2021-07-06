@@ -16,8 +16,8 @@
 	<updateservers><server type="extension" priority="1" name="{{nameUpper}}">https://raw.githubusercontent.com/GHSVS-de/upadateservers/master/{{name}}-update.xml</server></updateservers>
 
 	<changelogurl>https://raw.githubusercontent.com/GHSVS-de/upadateservers/master/{{name}}-changelog.xml</changelogurl>
-	
-	<infourl>https://github.com/GHSVS-de/{{name}}/blob/master/README.md</infourl>
+
+	<infourl>https://github.com/GHSVS-de/{{name}}#readme</infourl>
 
 	<scriptfile>installerScript.php</scriptfile>
 	<minimumPhp>{{minimumPhp}}</minimumPhp>
@@ -27,7 +27,7 @@
 	<allowDowngrades>{{allowDowngrades}}</allowDowngrades>
 
 	<files>
-		<filename plugin="prismhighlighterghsvs">prismhighlighterghsvs.php</filename>
+		<filename plugin="{{filename}}">{{filename}}.php</filename>
 		<folder>fields</folder>
 		<folder>Helper</folder>
 		<folder>language</folder>
@@ -48,7 +48,7 @@
 
 	<config>
 
-		<fields name="params" addfieldpath="plugins/content/prismhighlighterghsvs/fields">
+		<fields name="params" addfieldpath="plugins/content/{{filename}}/fields">
 
 			<fieldset name="thanks" label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FIELDSET_TANKS_AND_LICENSES">
 				<field name="spacerthanks" type="plgContentPrismHighlighterGhsvs.longdescription"
