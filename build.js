@@ -1,10 +1,9 @@
-const ncp = require('ncp').ncp;
-const fs = require('fs');
 const fse = require('fs-extra');
 const path = require('path');
-const mkdirp = require('mkdirp');
 const util = require("util");
 const rimRaf = util.promisify(require("rimraf"));
+const chalk = require('chalk');
+const recursive = require("recursive-readdir");
 
 const Manifest = "./package/prismhighlighterghsvs.xml";
 
@@ -13,6 +12,7 @@ const {
 	creationDate,
 	copyright,
 	name,
+	filename,
 	version,
 	licenseLong,
 	minimumPhp,
@@ -22,246 +22,174 @@ const {
 	allowDowngrades,
 } = require("./package.json");
 
-const doSomethingAsync1000 = (hallos) =>
-{
-  return new Promise(resolve => {
-    setTimeout(() => {
-			// let kack = 1 + 6;
-			// console.log(`kack: ${kack}`);
-			// "return" nur zur Demo.
-			return resolve(hallos)
-		}, 1000)
-  })
-}
+// Joomla media folder (target workdir) inside this project. For copy-to actions.
+const pathMedia = `./media`;
 
-const copyCSS = async (workDir, outputPath) =>
-{
-  return new Promise(resolve => {
-		ncp.limit = 16;
-		
-    ncp(workDir, outputPath, {filter: (source) => {
-        if (fs.lstatSync(source).isDirectory())
-				{
-					return true;
-        }
-				else
-				{
-					return source.match(/.*css/) != null;
-        }
-    }}, // options end here.
-		
-		function (err) {
-        if (err) {
-            return console.error(err);
-        }
-    } //err end here
-		
-		); // ncp end here
-
-		resolve('I copied plugins CSS in copyCSS().')
-  });
-}
-
-// https://gist.github.com/liangzan/807712/8fb16263cb39e8472d17aea760b6b1492c465af2
-let deleteEmptyDirsRec = async (dirPath, options = {}) => {
-  const
-    { removeContentOnly = false, drillDownSymlinks = false } = options,
-    { promisify } = require('util'),
-    path = require('path'),
-    fs = require('fs'),
-    readdirAsync = promisify(fs.readdir),
-    unlinkAsync = promisify(fs.unlink),
-    rmdirAsync = promisify(fs.rmdir),
-    lstatAsync = promisify(fs.lstat) // fs.lstat can detect symlinks, fs.stat can't
-  let
-    files
-
-  try {
-    files = await readdirAsync(dirPath)
-  } catch (e) {
-    throw new Error(e)
-  }
-
-  if (files.length) {
-    for (let fileName of files) {
-      let
-        filePath = path.join(dirPath, fileName),
-        fileStat = await lstatAsync(filePath),
-				isDir = fileStat.isDirectory()
-
-      if (isDir) {
-        await deleteEmptyDirsRec(filePath)
-      } else {
-        // await unlinkAsync(filePath)
-      }
-    }
-  }
-	
-	if (files.length === 0)
-	{
-		await rmdirAsync(dirPath)
-		console.log(`rm: ${dirPath.replace(__dirname, '')}`);
-	}
-	
-	return `I deleted empty folders in deleteEmptyDirsRec()`
-}
-
-let deleteFileTypeRec = async (dirPath, fileExtRegEx, options = {}) =>
-{
-  const
-    { removeContentOnly = false, drillDownSymlinks = false } = options,
-    { promisify } = require('util'),
-    path = require('path'),
-    fs = require('fs'),
-    readdirAsync = promisify(fs.readdir),
-    unlinkAsync = promisify(fs.unlink),
-    rmdirAsync = promisify(fs.rmdir),
-    lstatAsync = promisify(fs.lstat) // fs.lstat can detect symlinks, fs.stat can't
-  let
-    files
-
-  try {
-    files = await readdirAsync(dirPath)
-  } catch (e) {
-    throw new Error(e)
-  }
-
-  if (files.length)
-	{
-    for (let fileName of files) {
-      let
-        filePath = path.join(dirPath, fileName),
-        fileStat = await lstatAsync(filePath),
-				isDir = fileStat.isDirectory();
-
-      if (isDir) {
-        await deleteFileTypeRec(filePath, fileExtRegEx)
-      }
-			else if (filePath.match(fileExtRegEx))
-			{
-        await unlinkAsync(filePath);
-				console.log(`rm: ${filePath.replace(dirPath, '')}`);
-      }
-    }
-  }
-	
-	return `Deleted some files in deleteFileTypeRec() that matched '${fileExtRegEx}'.`
-}
-
-// Die master-Funktion mit async/await.
-/*const doSomething = async (hallo) =>
-{*/
-(async function exec()
-{
-
-	const firstCleanOuts = [
-		`./src/media/css/_combiByPlugin`,
-		`./src/media/css/prismjs`,
-		`./src/media/js/_combiByPlugin`,
-		`./src/media/js/prismjs`,
-		`./src/media/js/clipboard`,
-		`./src/media/prismjs`,
-		`./src/vendor`,
-		`./package`,
-		`./dist`,
-		// Conflicts while upload
-		'./vendor/bin/',
-		'./vendor/matthiasmullie/minify/bin',
-		'./src/vendor/bin/',
-		'./src/vendor/matthiasmullie/minify/bin'
-	];
-
-	for (const file of firstCleanOuts)
+async function cleanOut (cleanOuts) {
+	for (const file of cleanOuts)
 	{
 		await rimRaf(file).then(
-			answer => console.log(`rimrafed: ${file}.`)
-		);
+			answer => console.log(chalk.redBright(`rimrafed: ${file}.`))
+		).catch(error => console.error('Error ' + error));
 	}
+}
+
+(async function exec()
+{
+	const versionSub = await JSON.parse(fse.readFileSync(
+	`./node_modules/prismjs/package.json`).toString()).version;
+	console.log(chalk.yellowBright(`Using Prism version ${versionSub}`));
+
+	let cleanOuts = [
+		`./package`,
+		`./dist`,
+		`${pathMedia}/css/_combiByPlugin`,
+		`${pathMedia}/css/prismjs`,
+		`${pathMedia}/js/_combiByPlugin`,
+		`${pathMedia}/js/prismjs`,
+		`${pathMedia}/js/clipboard`,
+		`${pathMedia}/prismjs`,
+	];
+
+	await cleanOut(cleanOuts);
 
 	await fse.copy(
 		"./node_modules/clipboard/dist",
-		"./src/media/js/clipboard"
+		`${pathMedia}/js/clipboard`
 	).then(
-		answer => console.log(`Copied: Clipboard JS.`)
+		answer => console.log(chalk.yellowBright(`Copied: Clipboard JS.`))
 	);
 
 	await fse.copy(
 		"./node_modules/prismjs/themes",
-		`./src/media/css/prismjs/themes`
+		`${pathMedia}/css/prismjs/themes`
 	).then(
-		answer => console.log('Copied: Prismjs /themes/ CSS.')
+		answer => console.log(chalk.yellowBright(`Copied: Prismjs /themes/ CSS.`))
 	);
 
-	await copyCSS(
-		"./node_modules/prismjs/plugins",
-		`./src/media/css/prismjs/plugins`
-	).then(
-		answer => console.log('Copied: Prismjs /plugins/ CSS.')
-	);
-	
-	await doSomethingAsync1000(
-		`Did 1000 msec nothing because ncp doesn't wait. F'ing async/sync hell.`
-	).then(
-		answer => console.log(answer)
-	);
-	
-	await deleteEmptyDirsRec(
-		`${__dirname}/src/media/css/prismjs/plugins`
-	).then(
-		answer => console.log('Deleted: Empty Prismjs /plugins/ CSS folders.')
-	);
-
+	// ### Fill ./media/js/prismjs/plugins with JS files only! - START
 	await fse.copy(
 		"./node_modules/prismjs/plugins",
-		`./src/media/js/prismjs/plugins`
+		`${pathMedia}/js/prismjs/plugins`
 	).then(
-		answer => console.log('Copied: Prismjs JS /plugins/.')
+		answer => console.log(chalk.yellowBright(`Copied: Prismjs /plugins/ inclusive CSS to JS folder for further workout.`))
 	);
-	await deleteFileTypeRec(
-		`${__dirname}/src/media/js/prismjs/plugins`,
-		new RegExp('\\.css$')
+
+	// #### Remove copied CSS files from ./media/js/prismjs/plugins.
+	await recursive(`${pathMedia}/js/prismjs/plugins`).then(
+		function(files) {
+			let thisRegex = new RegExp('\.css$');
+
+			files.forEach((file) =>
+			{
+				file = path.join(__dirname, file);
+
+				if (thisRegex.test(file) && fse.existsSync(file)
+					&& fse.lstatSync(file).isFile())
+				{
+					fse.removeSync(file);
+				}
+			});
+		},
+		function(error) {
+			console.error("something exploded", error);
+		}
+	);
+
+	console.log(chalk.redBright(`Deleted CSS files inside Prismjs /plugins/js/.`));
+	// ### Fill ./media/js/prismjs/plugins with JS files only! - END
+
+	/*
+	### Fill ./media/css/prismjs/plugins with CSS files only! - START.
+	and then delete empty folders from ./media/css/prismjs/plugins
+	*/
+	await fse.copy(
+		"./node_modules/prismjs/plugins",
+		`${pathMedia}/css/prismjs/plugins`
 	).then(
-		answer => console.log(answer)
+		answer => console.log(chalk.yellowBright(`Copied: Prismjs /plugins/ inclusive JS to CSS folder for further workout.`))
 	);
+
+	await recursive(`${pathMedia}/css/prismjs/plugins`).then(
+		function(files) {
+			thisRegex = new RegExp('\.js$');
+
+			files.forEach((file) =>
+			{
+				file = path.join(__dirname, file);
+
+				if (thisRegex.test(file) && fse.existsSync(file)
+					&& fse.lstatSync(file).isFile())
+				{
+					fse.removeSync(file);
+				}
+			});
+		},
+		function(error) {
+			console.error("something exploded", error);
+		}
+	);
+
+	console.log(chalk.redBright(`Deleted JS files inside Prismjs /plugins/css/.`));
+
+	await fse.readdir(`${pathMedia}/css/prismjs/plugins`).then(
+		function(folders) {
+
+			folders.forEach((folder) =>
+			{
+				let folder_ = path.join(__dirname,`${pathMedia}/css/prismjs/plugins`, folder);
+				let filesInDir = fse.readdirSync(folder_);
+
+				if (!filesInDir.length)
+				{
+					fse.removeSync(folder_);
+					console.log(chalk.redBright(
+						`Deleted now empty folder ${folder} inside Prismjs /plugins/css/.`));
+				}
+			})
+		}
+	);
+	/*
+	### Fill ./media/css/prismjs/plugins with CSS files only! - END.
+	*/
+
+	await console.log(chalk.cyanBright(`Be patient! Some copy actions!`));
 
 	await fse.copy(
 		"./node_modules/prismjs/components",
-		`./src/media/js/prismjs/components`
+		`${pathMedia}/js/prismjs/components`
 	).then(
-		answer => console.log('Copied: Prismjs JS /components/.')
+		answer => console.log(chalk.yellowBright(
+			'Copied: Prismjs JS /components/.'))
 	);
 
 	await fse.copy(
 		"./node_modules/prismjs/components.json",
-		`./src/media/prismjs/components.json`
+		`${pathMedia}/prismjs/components.json`
 	).then(
-		answer => console.log(`Copied: Prismjs 'components.json'.`)
+		answer => console.log(chalk.yellowBright(
+			`Copied: Prismjs 'components.json'.`))
 	);
 
 	await fse.copy(
 		"./node_modules/prismjs/package.json",
-		`./src/media/prismjs/package.json`
+		`${pathMedia}/prismjs/package.json`
 	).then(
-		answer => console.log(`Copied: Prismjs 'package.json' to extract version etc. later.`)
+		answer => console.log(chalk.yellowBright(
+			`Copied: Prismjs 'package.json'.`))
 	);
 
 	await fse.copy(
 		"./node_modules/prismjs/LICENSE",
-		`./src/media/prismjs/LICENSE`
+		`${pathMedia}/prismjs/LICENSE`
 	).then(
-		answer => console.log(`Copied: Prismjs 'LICENSE'.`)
-	);
-
-	await fse.copy(
-		"./vendor",
-		`./src/vendor`
-	).then(
-		answer => console.log(`Copied: /vendor/ PHP.`)
+		answer => console.log(chalk.yellowBright(
+			`Copied: Prismjs 'LICENSE'.`))
 	);
 
 	const copyToDirs = [
-		`./src/media/css/_combiByPlugin`,
-		`./src/media/js/_combiByPlugin`
+		`${pathMedia}/css/_combiByPlugin`,
+		`${pathMedia}/js/_combiByPlugin`
 	];
 
 	for (const file of copyToDirs)
@@ -269,15 +197,43 @@ let deleteFileTypeRec = async (dirPath, fileExtRegEx, options = {}) =>
 		await fse.copy("./_combiByPlugin", file
 		)
 		.then(
-			made => console.log(`Created ${copyToDirs}`)
+			made => console.log(chalk.yellowBright(
+				`Created ${file}`))
 		);
 	};
 
-	await fse.copy("./src", "./package");
-	await fse.mkdir("./dist");
+	await fse.copy(`${pathMedia}`, "./package/media"
+	).then(
+		answer => console.log(chalk.yellowBright(
+			`Copied ${pathMedia} to ./package/media.`))
+	);
+
+	await console.log(chalk.cyanBright(
+		`Be patient! Composer copy actions!`));
+	// Orphans:
+	fse.removeSync("./_composer/vendor/bin");
+	fse.removeSync("./_composer/vendor/matthiasmullie/minify/bin");
+	fse.removeSync("./_composer/vendor/matthiasmullie/minify/.github");
+	fse.removeSync("./_composer/vendor/laminas/laminas-zendframework-bridge/.github");
+	await fse.copy("./_composer/vendor", `./package/vendor`
+	).then(
+		answer => console.log(chalk.yellowBright(
+			`Copied _composer/vendor to ./package/vendor.`))
+	);
+
+	await fse.copy("./src", "./package").then(
+		answer => console.log(chalk.yellowBright(
+			`Copied ./src/* to ./package.`))
+	);
+
+	await fse.mkdir("./dist").then(
+		answer => console.log(chalk.greenBright(
+			`Created ./dist.`))
+	);
 
   let xml = await fse.readFile(Manifest, { encoding: "utf8" });
 	xml = xml.replace(/{{name}}/g, name);
+	xml = xml.replace(/{{filename}}/g, filename);
 	xml = xml.replace(/{{nameUpper}}/g, name.toUpperCase());
 	xml = xml.replace(/{{authorName}}/g, author.name);
 	xml = xml.replace(/{{creationDate}}/g, creationDate);
@@ -290,16 +246,33 @@ let deleteFileTypeRec = async (dirPath, fileExtRegEx, options = {}) =>
 	xml = xml.replace(/{{minimumJoomla}}/g, minimumJoomla);
 	xml = xml.replace(/{{maximumJoomla}}/g, maximumJoomla);
 	xml = xml.replace(/{{allowDowngrades}}/g, allowDowngrades);
-	
-	fse.writeFileSync(Manifest, xml, { encoding: "utf8" });
 
-	const sourceInfos = await JSON.parse(fse.readFileSync(`./package/media/prismjs/package.json`).toString());
+	await fse.writeFile(Manifest, xml, { encoding: "utf8" }
+	).then(
+		answer => console.log(chalk.yellowBright(
+			`Replaced entries in ${Manifest}.`))
+	);
 
+	// Zip it
+	const zipFilename = `${name}-${version}_${versionSub}.zip`;
 	const zip = new (require("adm-zip"))();
-  zip.addLocalFolder("package", false);
-  zip.writeZip(`dist/${name}-${version}_${sourceInfos.version}.zip`);
+	zip.addLocalFolder("package", false);
+	await zip.writeZip(`./dist/${zipFilename}`);
+	console.log(chalk.cyanBright(chalk.bgRed(
+		`./dist/${zipFilename} written.`)));
 
-
+	cleanOuts = [
+		`./package`,
+		`${pathMedia}/css/_combiByPlugin`,
+		`${pathMedia}/css/prismjs`,
+		`${pathMedia}/js/_combiByPlugin`,
+		`${pathMedia}/js/prismjs`,
+		`${pathMedia}/js/clipboard`,
+		`${pathMedia}/prismjs`,
+	];
+	await cleanOut(cleanOuts).then(
+		answer => console.log(chalk.cyanBright(chalk.bgRed(
+			`Finished. Good bye!`)))
+	);
 
 })();
-
