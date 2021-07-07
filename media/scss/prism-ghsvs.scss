@@ -1,0 +1,128 @@
+// Weil node-sass zu dämlich ist für Pfadvariablen wie:
+// $bootstrap_path: "../../../media/plg_system_bs3ghsvs/scss/bootstrap/";
+// musst leider hart einkodieren.
+
+@import "importerMin";
+
+pre[class*="language-"]
+{
+	background: $white;
+}
+
+pre > code[class*="language-"]
+{
+	padding-bottom: 1rem;
+}
+
+pre[class*="language-"]
+{
+	max-height: 32rem;
+	overflow: auto;
+
+	// Bugfix. Scrollbar des PRE überdeckt .sticky-top #CfButtonGruppe
+	z-index: 10;
+}
+
+// Force standard padding if no JavaScript
+.jsNotActive pre[class*="language-"]
+{
+	padding: $pre-padding-custom !important;
+}
+
+code[class*="language-"],
+pre[class*="language-"]
+{
+	// Das führt zu Sch... Ergebnissen auf kleinen Bildschirmen.
+	// Ich denke Copy-Button sollte ausreichen.
+	//white-space: pre-wrap !important;
+	text-shadow: 0 1px #bbb;
+}
+
+div.code-toolbar
+{
+	background-color: #eee;
+	border: 1px solid #aaa;
+
+	& >  .toolbar
+	{
+
+		position: relative;
+		top:auto;
+		right: auto;
+		transition: none;
+		opacity: 1;
+		padding: 0 ($spacer * .25) ($spacer * .5) ($spacer * .25);
+		background-color: #eee;
+
+		// a ist Download-Button
+		// button ist Copy
+		a,button
+		{
+			color: $white;
+			font-size: 0.9rem;
+			font-weight: $font-weight-bold;
+			padding: ($spacer * .25);
+			background-color: $red;
+			border-radius: 0;
+			box-shadow: none;
+			border-color: $black;
+			border-width: 1px;
+			border-style: solid;
+			margin-left: ($spacer * .25);
+			vertical-align: middle;
+		}
+
+		// SPAN ist language
+		span
+		{
+			color: inherit;
+			font-size: 0.7rem;
+			padding: ($spacer * .25);
+			border-radius: 0;
+			border: none;
+			margin-left: ($spacer * .25);
+			vertical-align: middle;
+			box-shadow: none;
+		}
+		a:hover, button:hover
+		{
+			color: $white;
+			background-color: #222;
+		}
+	}
+}
+
+div.codeContainer
+{
+	margin-bottom: ($spacer * 1);
+}
+
+// Bug-Fix wegen fehlender Zeilennummerierung innerhalb Accordion/pagebreakghsvs
+div.collapse.show span.line-numbers-rows > span
+{
+	height: auto !important;
+}
+
+
+// Ist eine Krücke, wo ich den DIV noch nicht drumrumgedingst habe.
+.code-toolbar
+{
+	& + h2,
+	& + h3,
+	& + h4,
+	& + h5,
+	& + h6,
+	& + ul,
+	& + ol,
+	& + p
+	{
+		margin-top: 1rem;
+	}
+}
+h2, h3, h4, h5, h6
+{
+	+ .code-toolbar
+	{
+		margin-top: 1rem;
+	}
+}
