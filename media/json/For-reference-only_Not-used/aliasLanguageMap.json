@@ -90,6 +90,14 @@
         "alias": "apacheconf",
         "aliasTitle": "Apache Configuration"
     },
+    "apex": {
+        "alias": "apex",
+        "aliasTitle": "Apex",
+        "requireLanguages": [
+            "clike",
+            "sql"
+        ]
+    },
     "apl": {
         "alias": "apl",
         "aliasTitle": "APL"
@@ -168,6 +176,13 @@
         "alias": "bbcode",
         "aliasTitle": "Shortcode"
     },
+    "birb": {
+        "alias": "birb",
+        "aliasTitle": "Birb",
+        "requireLanguages": [
+            "clike"
+        ]
+    },
     "bison": {
         "alias": "bison",
         "aliasTitle": "Bison",
@@ -195,6 +210,14 @@
     "bro": {
         "alias": "bro",
         "aliasTitle": "Bro"
+    },
+    "bsl": {
+        "alias": "bsl",
+        "aliasTitle": "BSL (1C:Enterprise)"
+    },
+    "oscript": {
+        "alias": "bsl",
+        "aliasTitle": "OneScript"
     },
     "c": {
         "alias": "c",
@@ -226,6 +249,27 @@
             "clike"
         ]
     },
+    "cfscript": {
+        "alias": "cfscript",
+        "aliasTitle": "CFScript",
+        "requireLanguages": [
+            "clike"
+        ]
+    },
+    "cfc": {
+        "alias": "cfscript",
+        "aliasTitle": "cfc"
+    },
+    "chaiscript": {
+        "alias": "chaiscript",
+        "aliasTitle": "ChaiScript",
+        "requireLanguages": [
+            "clike",
+            "cpp",
+            "c",
+            "clike"
+        ]
+    },
     "cil": {
         "alias": "cil",
         "aliasTitle": "CIL"
@@ -237,6 +281,10 @@
     "cmake": {
         "alias": "cmake",
         "aliasTitle": "CMake"
+    },
+    "cobol": {
+        "alias": "cobol",
+        "aliasTitle": "COBOL"
     },
     "coffeescript": {
         "alias": "coffeescript",
@@ -262,6 +310,10 @@
         "alias": "csp",
         "aliasTitle": "Content-Security-Policy"
     },
+    "coq": {
+        "alias": "coq",
+        "aliasTitle": "Coq"
+    },
     "crystal": {
         "alias": "crystal",
         "aliasTitle": "Crystal",
@@ -276,6 +328,10 @@
         "requireLanguages": [
             "css"
         ]
+    },
+    "csv": {
+        "alias": "csv",
+        "aliasTitle": "CSV"
     },
     "cypher": {
         "alias": "cypher",
@@ -294,6 +350,10 @@
         "requireLanguages": [
             "clike"
         ]
+    },
+    "dataweave": {
+        "alias": "dataweave",
+        "aliasTitle": "DataWeave"
     },
     "dax": {
         "alias": "dax",
@@ -334,6 +394,14 @@
     "dockerfile": {
         "alias": "docker",
         "aliasTitle": "dockerfile"
+    },
+    "dot": {
+        "alias": "dot",
+        "aliasTitle": "DOT (Graphviz)"
+    },
+    "gv": {
+        "alias": "dot",
+        "aliasTitle": "gv"
     },
     "ebnf": {
         "alias": "ebnf",
@@ -414,6 +482,10 @@
     "factor": {
         "alias": "factor",
         "aliasTitle": "Factor"
+    },
+    "false": {
+        "alias": "false",
+        "aliasTitle": "False"
     },
     "firestore-security-rules": {
         "alias": "firestore-security-rules",
@@ -515,6 +587,10 @@
             "markup"
         ]
     },
+    "hbs": {
+        "alias": "handlebars",
+        "aliasTitle": "hbs"
+    },
     "haskell": {
         "alias": "haskell",
         "aliasTitle": "Haskell"
@@ -561,6 +637,21 @@
     "icon": {
         "alias": "icon",
         "aliasTitle": "Icon"
+    },
+    "icu-message-format": {
+        "alias": "icu-message-format",
+        "aliasTitle": "ICU Message Format"
+    },
+    "idris": {
+        "alias": "idris",
+        "aliasTitle": "Idris",
+        "requireLanguages": [
+            "haskell"
+        ]
+    },
+    "idr": {
+        "alias": "idris",
+        "aliasTitle": "idr"
     },
     "ignore": {
         "alias": "ignore",
@@ -618,6 +709,10 @@
     "javastacktrace": {
         "alias": "javastacktrace",
         "aliasTitle": "Java stack trace"
+    },
+    "jexl": {
+        "alias": "jexl",
+        "aliasTitle": "Jexl"
     },
     "jolie": {
         "alias": "jolie",
@@ -707,6 +802,14 @@
         "alias": "kotlin",
         "aliasTitle": "Kotlin Script"
     },
+    "kumir": {
+        "alias": "kumir",
+        "aliasTitle": "KuMir (\u041a\u0443\u041c\u0438\u0440)"
+    },
+    "kum": {
+        "alias": "kumir",
+        "aliasTitle": "kum"
+    },
     "latex": {
         "alias": "latex",
         "aliasTitle": "LaTeX"
@@ -727,7 +830,6 @@
             "markup-templating",
             "markup",
             "php",
-            "clike",
             "markup-templating",
             "markup"
         ]
@@ -752,7 +854,11 @@
     },
     "liquid": {
         "alias": "liquid",
-        "aliasTitle": "Liquid"
+        "aliasTitle": "Liquid",
+        "requireLanguages": [
+            "markup-templating",
+            "markup"
+        ]
     },
     "lisp": {
         "alias": "lisp",
@@ -777,6 +883,10 @@
     "llvm": {
         "alias": "llvm",
         "aliasTitle": "LLVM IR"
+    },
+    "log": {
+        "alias": "log",
+        "aliasTitle": "Log file"
     },
     "lolcode": {
         "alias": "lolcode",
@@ -820,6 +930,14 @@
         "alias": "mizar",
         "aliasTitle": "Mizar"
     },
+    "mongodb": {
+        "alias": "mongodb",
+        "aliasTitle": "MongoDB",
+        "requireLanguages": [
+            "javascript",
+            "clike"
+        ]
+    },
     "monkey": {
         "alias": "monkey",
         "aliasTitle": "Monkey"
@@ -852,6 +970,14 @@
         "alias": "nand2tetris-hdl",
         "aliasTitle": "Nand To Tetris HDL"
     },
+    "naniscript": {
+        "alias": "naniscript",
+        "aliasTitle": "Naninovel Script"
+    },
+    "nani": {
+        "alias": "naniscript",
+        "aliasTitle": "nani"
+    },
     "nasm": {
         "alias": "nasm",
         "aliasTitle": "NASM"
@@ -860,12 +986,13 @@
         "alias": "neon",
         "aliasTitle": "NEON"
     },
+    "nevod": {
+        "alias": "nevod",
+        "aliasTitle": "Nevod"
+    },
     "nginx": {
         "alias": "nginx",
-        "aliasTitle": "nginx",
-        "requireLanguages": [
-            "clike"
-        ]
+        "aliasTitle": "nginx"
     },
     "nim": {
         "alias": "nim",
@@ -903,6 +1030,14 @@
             "clike"
         ]
     },
+    "openqasm": {
+        "alias": "openqasm",
+        "aliasTitle": "OpenQasm"
+    },
+    "qasm": {
+        "alias": "openqasm",
+        "aliasTitle": "qasm"
+    },
     "oz": {
         "alias": "oz",
         "aliasTitle": "Oz"
@@ -930,6 +1065,10 @@
         "alias": "pascaligo",
         "aliasTitle": "Pascaligo"
     },
+    "psl": {
+        "alias": "psl",
+        "aliasTitle": "PATROL Scripting Language"
+    },
     "pcaxis": {
         "alias": "pcaxis",
         "aliasTitle": "PC-Axis"
@@ -954,7 +1093,6 @@
         "alias": "php",
         "aliasTitle": "PHP",
         "requireLanguages": [
-            "clike",
             "markup-templating",
             "markup"
         ]
@@ -964,7 +1102,6 @@
         "aliasTitle": "PHPDoc",
         "requireLanguages": [
             "php",
-            "clike",
             "markup-templating",
             "markup",
             "javadoclike"
@@ -975,7 +1112,6 @@
         "aliasTitle": "PHP Extras",
         "requireLanguages": [
             "php",
-            "clike",
             "markup-templating",
             "markup"
         ]
@@ -1013,6 +1149,10 @@
     "prolog": {
         "alias": "prolog",
         "aliasTitle": "Prolog"
+    },
+    "promql": {
+        "alias": "promql",
+        "aliasTitle": "PromQL"
     },
     "properties": {
         "alias": "properties",
@@ -1053,6 +1193,17 @@
         "alias": "purebasic",
         "aliasTitle": "pbfasm"
     },
+    "purescript": {
+        "alias": "purescript",
+        "aliasTitle": "PureScript",
+        "requireLanguages": [
+            "haskell"
+        ]
+    },
+    "purs": {
+        "alias": "purescript",
+        "aliasTitle": "purs"
+    },
     "python": {
         "alias": "python",
         "aliasTitle": "Python"
@@ -1060,6 +1211,17 @@
     "py": {
         "alias": "python",
         "aliasTitle": "py"
+    },
+    "qsharp": {
+        "alias": "qsharp",
+        "aliasTitle": "Q#",
+        "requireLanguages": [
+            "clike"
+        ]
+    },
+    "qs": {
+        "alias": "qsharp",
+        "aliasTitle": "qs"
     },
     "q": {
         "alias": "q",
@@ -1127,6 +1289,10 @@
     "regex": {
         "alias": "regex",
         "aliasTitle": "Regex"
+    },
+    "rego": {
+        "alias": "rego",
+        "aliasTitle": "Rego"
     },
     "renpy": {
         "alias": "renpy",
@@ -1208,6 +1374,14 @@
             "bash"
         ]
     },
+    "sh-session": {
+        "alias": "shell-session",
+        "aliasTitle": "sh-session"
+    },
+    "shellsession": {
+        "alias": "shell-session",
+        "aliasTitle": "shellsession"
+    },
     "smali": {
         "alias": "smali",
         "aliasTitle": "Smali"
@@ -1223,6 +1397,14 @@
             "markup-templating",
             "markup"
         ]
+    },
+    "sml": {
+        "alias": "sml",
+        "aliasTitle": "SML"
+    },
+    "smlnj": {
+        "alias": "sml",
+        "aliasTitle": "SML\/NJ"
     },
     "solidity": {
         "alias": "solidity",
@@ -1276,6 +1458,17 @@
     "sql": {
         "alias": "sql",
         "aliasTitle": "SQL"
+    },
+    "squirrel": {
+        "alias": "squirrel",
+        "aliasTitle": "Squirrel",
+        "requireLanguages": [
+            "clike"
+        ]
+    },
+    "stan": {
+        "alias": "stan",
+        "aliasTitle": "Stan"
     },
     "iecst": {
         "alias": "iecst",
@@ -1376,6 +1569,14 @@
         "alias": "typescript",
         "aliasTitle": "ts"
     },
+    "typoscript": {
+        "alias": "typoscript",
+        "aliasTitle": "TypoScript"
+    },
+    "tsconfig": {
+        "alias": "typoscript",
+        "aliasTitle": "TSConfig"
+    },
     "unrealscript": {
         "alias": "unrealscript",
         "aliasTitle": "UnrealScript"
@@ -1387,6 +1588,21 @@
     "uc": {
         "alias": "unrealscript",
         "aliasTitle": "uc"
+    },
+    "uri": {
+        "alias": "uri",
+        "aliasTitle": "URI"
+    },
+    "url": {
+        "alias": "uri",
+        "aliasTitle": "URL"
+    },
+    "v": {
+        "alias": "v",
+        "aliasTitle": "V",
+        "requireLanguages": [
+            "clike"
+        ]
     },
     "vala": {
         "alias": "vala",
@@ -1447,6 +1663,22 @@
         "requireLanguages": [
             "markup"
         ]
+    },
+    "wolfram": {
+        "alias": "wolfram",
+        "aliasTitle": "Wolfram language"
+    },
+    "mathematica": {
+        "alias": "wolfram",
+        "aliasTitle": "Mathematica"
+    },
+    "nb": {
+        "alias": "wolfram",
+        "aliasTitle": "Mathematica Notebook"
+    },
+    "wl": {
+        "alias": "wolfram",
+        "aliasTitle": "wl"
     },
     "xeora": {
         "alias": "xeora",
