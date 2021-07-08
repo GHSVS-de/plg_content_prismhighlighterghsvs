@@ -48,6 +48,8 @@ async function cleanOut (cleanOuts) {
 		`${pathMedia}/js/_combiByPlugin`,
 		`${pathMedia}/js/prismjs`,
 		`${pathMedia}/js/clipboard`,
+		`${pathMedia}/json/pluginCssMapJson.json`,
+		`${pathMedia}/json/aliasLanguageMap.json`,
 		`${pathMedia}/prismjs`,
 	];
 
