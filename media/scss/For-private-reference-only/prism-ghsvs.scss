@@ -1,7 +1,3 @@
-// Weil node-sass zu dämlich ist für Pfadvariablen wie:
-// $bootstrap_path: "../../../media/plg_system_bs3ghsvs/scss/bootstrap/";
-// musst leider hart einkodieren.
-
 @import "importerMin";
 
 pre[class*="language-"]
@@ -38,57 +34,89 @@ pre[class*="language-"]
 	text-shadow: 0 1px #bbb;
 }
 
+// Da ich mit Version 1.24 von diversen B\C überrascht wurde,
+// jetzt noch "ausführlicheres Überschreiben".
 div.code-toolbar
 {
 	background-color: #eee;
 	border: 1px solid #aaa;
+	position: relative;
 
-	& >  .toolbar
+	& > .toolbar
 	{
-
+		// Wichtig! Sonst oben rechts und ausblenden und so Scheiß.
 		position: relative;
-		top:auto;
+		top: auto;
 		right: auto;
 		transition: none;
 		opacity: 1;
 		padding: 0 ($spacer * .25) ($spacer * .5) ($spacer * .25);
 		background-color: #eee;
 
-		// a ist Download-Button
-		// button ist Copy
-		a,button
+		> .toolbar-item
 		{
-			color: $white;
-			font-size: 0.9rem;
-			font-weight: $font-weight-bold;
-			padding: ($spacer * .25);
-			background-color: $red;
-			border-radius: 0;
-			box-shadow: none;
-			border-color: $black;
-			border-width: 1px;
-			border-style: solid;
-			margin-left: ($spacer * .25);
-			vertical-align: middle;
+			display: inline-block;
+
+			> button
+			{
+				// !important damit das Copied! nicht temporär unlesbar wird.
+				color: $white !important;
+				font-size: 0.9rem;
+				font-weight: $font-weight-bold;
+				padding: ($spacer * .25);
+				background: $red;
+				background-color: $red;
+				border-radius: 0;
+				box-shadow: none;
+				border-color: $black;
+				border-width: 1px;
+				border-style: solid;
+				margin-left: ($spacer * .25);
+				vertical-align: middle;
+
+				&:hover
+				{
+					background: #222;
+					background-color: #222;
+				}
+			}
 		}
 
-		// SPAN ist language
-		span
-		{
-			color: inherit;
-			font-size: 0.7rem;
-			padding: ($spacer * .25);
-			border-radius: 0;
-			border: none;
-			margin-left: ($spacer * .25);
-			vertical-align: middle;
-			box-shadow: none;
-		}
-		a:hover, button:hover
-		{
-			color: $white;
-			background-color: #222;
-		}
+		// a ist Download-Button
+		// button ist Copy (seit prism 1.24 nach oben verschoben
+		// a
+		// {
+		// 	color: $white;
+		//			font-size: 0.9rem;
+		//			font-weight: $font-weight-bold;
+		//			padding: ($spacer * .25);
+		//			background-color: $red;
+		//			border-radius: 0;
+		//			box-shadow: none;
+		//			border-color: $black;
+		//			border-width: 1px;
+		//			border-style: solid;
+		//			margin-left: ($spacer * .25);
+		//			vertical-align: middle;
+		// }
+
+		// SPAN ist language. Seit 1.24 nicht mehr alleine.
+		//		span
+		//		{
+		//			color: inherit;
+		//			font-size: 0.7rem;
+		//			padding: ($spacer * .25);
+		//			border-radius: 0;
+		//			border: none;
+		//			margin-left: ($spacer * .25);
+		//			vertical-align: middle;
+		//			box-shadow: none;
+		//		}
+		//		a:hover, button:hover
+		//		{
+		//			color: $white;
+		//			background-color: #222;
+		//		}
 	}
 }
 
