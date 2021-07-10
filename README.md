@@ -9,6 +9,11 @@
 - **Work in (long) progress!!**
 - But works on my public, private website for a long time now.
 
+# Prism docs/infos
+- [Supported languages and aliases](https://prismjs.com/index.html#supported-languages)
+- [Per language examples](https://prismjs.com/examples.html#per-language-examples)
+- [Plugins](https://prismjs.com/index.html#plugins)
+
 # My personal build procedure (WSL 1, Debian, Win 10)
 - Prepare/adapt `./package.json`.
 - `cd /mnt/z/git-kram/plg_content_prismhighlighterghsvs`
