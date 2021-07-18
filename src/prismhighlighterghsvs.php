@@ -17,11 +17,11 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 	protected $basepath = 'media/plg_content_prismhighlighterghsvs';
 	protected static $loaded;
 	protected $app;
-	
+
 	/**
 	 * Switch for decision if it's worth to proceed.
 	 *
-	 * @var bool 
+	 * @var bool
 	*/
 	protected $goOn = false;
 	protected $filesToLoad = [
@@ -37,16 +37,20 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		'mustLanguages' => [],
 		'requireVendorJs' => [],
 	];
-	
+
 	// Specials: final replacements in article->text
 	protected $replace = [
 		'what' => [],
 		'with' => [],
 	];
 
+	// Schlechte Krücke, um doppelten Lauf zu unterbinden. Bspw. Modul
+	// Let's hope that it doesn't need other languages.
+	// To be fixed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	protected $count = 0;
+
 	public function onContentPrepare($context, &$article, &$params, $page = 0)
 	{
-###################return;
 		if (
 			$context !== 'com_content.article'
 			|| !$this->app->isClient('site')
@@ -61,6 +65,12 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			return;
 		}
 
+		// Schlechte Krücke, um doppelten Lauf zu unterbinden. Bspw. Modul
+		if ($this->count >= 1)
+		{
+			return;
+		}
+
 		$hasCODE = strpos($article->text, '<code') !== false;
 		$hasPRE = strpos($article->text, '<pre') !== false;
 
@@ -68,11 +78,12 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		{
 			return;
 		}
-		
+
 		// Why that? Answer: Maybe plugin later also active for modules.
 		if (!isset(self::$loaded['autoload']))
 		{
-			JLoader::register('PrismHighlighterGhsvs', __DIR__ . '/Helper/PrismHighlighterGhsvsHelper.php');
+			JLoader::register('PrismHighlighterGhsvs',
+				__DIR__ . '/Helper/PrismHighlighterGhsvsHelper.php');
 			require __DIR__ . '/vendor/autoload.php';
 			self::$loaded['autoload'] = 1;
 		}
@@ -94,13 +105,13 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		// Search for lang(uage)-xxx classes (and others) 0:only in <code> or 1:also in <pre>?
 		// ToDo: Was a stupid idea.
 		$tagsParam = $this->params->get('tags', 0);
-		
+
 		$collectAttribs = [];
 
 		// autoloader | combined | singleFile
 		$howToLoad = $this->params->get('howToLoad', 'combined');
 
-		/* Field 'userMustSelect'. Some Prism plugins cannot be detected 
+		/* Field 'userMustSelect'. Some Prism plugins cannot be detected
 		automatically by this Joomla plugin.
 		They do not use specific identifiers in the HTML.
 ########## Plugin autolinker,data-uri-highlight,highlight-keywords,inline-color,keep-markup,previewers,show-invisibles ##########
@@ -111,7 +122,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		// We need this array earlier than expected.
 		$forced = $this->params->get('userMustSelect', []);
 		$inlineColorToLoad = false;
-		
+
 ########## Plugin inline-color. Part 1. Advance test 1 ##########
 		if (\in_array('inline-color', $forced))
 		{
@@ -129,7 +140,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		*/
 
 		$pluginConfigurations_1 = $this->params->get('pluginConfiguration_1');
-		
+
 		if (is_object($pluginConfigurations_1) && count(get_object_vars($pluginConfigurations_1)))
 		{
 			foreach ($pluginConfigurations_1 as $pluginConfiguration)
@@ -139,14 +150,8 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 					&& ($plugin = str_replace('(*)', '', $pluginConfiguration->plugin, $must))
 					&& $config = trim($pluginConfiguration->configuration)
 				){
-					// ToDo: Maybe for debug puposes? Otherwise remove.
-					if ($must)
-					{
-						#$plgConfigurations['must'][$plugin] = $must;
-					}
-
 					/* We store the configuration always here and decide later if we
-					will load it. */
+						will load it. */
 					$plgConfigurations[$plugin][] = $config;
 				}
 			}
@@ -159,7 +164,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		file. */
 
 		$pluginConfigurations_2 = $this->params->get('pluginConfiguration_2');
-		
+
 		if (is_object($pluginConfigurations_2) && count(get_object_vars($pluginConfigurations_2)))
 		{
 			foreach ($pluginConfigurations_2 as $pluginConfiguration)
@@ -169,12 +174,6 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 					&& ($plugin = str_replace('(*)', '', $pluginConfiguration->plugin, $must))
 				){
 					$this->filesToLoad['plugin'][] = $plugin;
-					
-					// ToDo: Maybe for debug puposes? Otherwise remove.
-					if ($must)
-					{
-						#$plgConfigurations['must'][$plugin] = $must;
-					}
 
 					if ($config = trim($pluginConfiguration->configuration))
 					{
@@ -249,15 +248,15 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 								continue;
 							}
 
-							$collectAttribs[$key][$attribute->name][] = $attribute->value;				
+							$collectAttribs[$key][$attribute->name][] = $attribute->value;
 						}
-						
+
 						// Parent PRE => Not inline.
 						$collectAttribs[$key]['isInlineCode'] = 0;
-						
+
 						/* We know here that we have <pre><code> combis.
 						Let's detect plugins without characteristic
-						attributes but characteristic nodes. 
+						attributes but characteristic nodes.
 						*/
 
 ########## Plugin unescaped-markup ##########
@@ -278,7 +277,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 						$collectAttribs[$key]['isInlineCode'] = 1;
 					}
 				}
-				
+
 				// Rough house cleaning.
 				foreach ($collectAttribs as $key => $collected)
 				{
@@ -362,13 +361,13 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 					$classes = array_map('trim', explode(' ', $class));
 					$classesAll .= ' ' . implode(' ', $classes) . ' ';
 				}
-				
+
 				if ($classesAll !== '')
 				{
 					// Short check with strpos.
-					$hasLang = 
+					$hasLang =
 					PrismHighlighterGhsvs::strposCheckForLanguageClass($classesAll, $supportLang);
-					
+
 					if ($hasLang)
 					{
 						if (preg_match_all($muster, $classesAll, $matches))
@@ -389,7 +388,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			}
 			$collectAttribs[$key]['classesAll'] = $classesAll;
 		}
-		
+
 		if ($theme = $this->params->get('theme', 'prism'))
 		{
 			$this->filesToLoad['css'] = (array) $theme;
@@ -400,7 +399,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		{
 			unset($forced[ \array_keys($forced, 'inline-color')[0] ]);
 		}
-########## /Plugin inline-color ##########	
+########## /Plugin inline-color ##########
 
 		if ($forced)
 		{
@@ -423,11 +422,11 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			);
 		}
 
-		/* ToDo: Revise this comment. 
+		/* ToDo: Revise this comment.
 		Some plugins can be detected with CSS classes and/or attributes.
 		Some plugins need <pre><code> (= ignore inline)
 		Some/all(?) need a language
-		
+
 		ToDo: This should be a JSON file in the end instead of searching spaghetti like.
 		ToDo or not: It's annoying. Some plugins need a language- class(!) that also can be
 		"language-firlefanz". */
@@ -461,11 +460,11 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 					// ToDo: preg_match_all is just friendly for stupid users ;-)
 					// 'diff-highlight' expects language-diff-, not lang-diff-!
 					$muster = '/\s+language-diff-([-a-z]+)\s+/';
-	
+
 					if (preg_match_all($muster, $classesAll, $matches))
 					{
 						$this->filesToLoad['plugin'][] = 'diff-highlight';
-					
+
 						foreach ($matches[1] as $lang)
 						{
 							$this->filesToLoad['language'][] = $aliasLanguageMap[$lang]['alias'];
@@ -514,7 +513,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 ########## /Plugin line-highlight ##########
 
 			} // if ($attribs['isInlineCode'] === 0) END
-			
+
 		} // foreach ($collectAttribs as $key => $attribs) END
 
 		// autoloader makes no sense if there is no language class (= no language found).
@@ -523,9 +522,9 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			&& $this->filesToLoad['language']
 		){
 			$this->filesToLoad['plugin'][] = 'autoloader';
-			$this->filesToLoad['scriptDeclaration'][] 
+			$this->filesToLoad['scriptDeclaration'][]
 				= "Prism.plugins.autoloader.languages_path = " . JUri::root(true) . $this->basepath . "/prismjs/components';";
-			
+
 			$this->filesToLoad['language'] = [];
 		}
 
@@ -552,7 +551,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				}
 			}
 		}
-		
+
 		// Collect plugin dependencies.
 		if ($this->filesToLoad['plugin'])
 		{
@@ -563,7 +562,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 					unset($this->filesToLoad['plugin'][$key]);
 					continue;
 				}
-				
+
 				if ($pluginCssMap[$plugin]['noCSS'] == 0)
 				{
 					$this->filesToLoad['requireCss'][] = $plugin;
@@ -576,7 +575,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 						$this->filesToLoad['requireVendorJs'][] = $require;
 					}
 				}
-				
+
 				// Yes, there can be language dependencies for plugins.
 				foreach (['requirePlugins', 'requireLanguages'] as $requireKey)
 				{
@@ -585,7 +584,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 						foreach ($pluginCssMap[$plugin][$requireKey] as $require)
 						{
 							$this->filesToLoad[$requireKey][] = $require;
-	
+
 							if (
 								$requireKey === 'requirePlugins'
 								&& (int) $pluginCssMap[$require]['noCSS'] === 0
@@ -609,7 +608,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				$this->filesToLoad['mustLanguages'],
 				$this->filesToLoad['language']
 			);
-			
+
 			// ToDo: For easier debugging. Remove?
 			unset($this->filesToLoad['mustLanguages']);
 		}
@@ -630,25 +629,26 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			}
 		}
 
-		$this->filesToLoad['plugin'] = 
+		$this->filesToLoad['plugin'] =
 			\array_merge(
 				$this->filesToLoad['requirePlugins'],
 				$this->filesToLoad['plugin']
-		); 
+		);
 		// ToDo: For easier debugging. Remove?
-		unset($this->filesToLoad['requirePlugins']);
+		//unset($this->filesToLoad['requirePlugins']);
 
-		$this->filesToLoad['language'] = 
+		$this->filesToLoad['language'] =
 			\array_merge(
 				$this->filesToLoad['requireJs'],
 				$this->filesToLoad['requireLanguages'],
 				$this->filesToLoad['language']
 		);
 		// ToDo: For easier debugging. Remove?
-		unset(
-			$this->filesToLoad['requireJs'],
-			$this->filesToLoad['requireLanguages']
-		);
+		// Problems with PHP8 when second run, e.g. a module.
+		//unset(
+			//$this->filesToLoad['requireJs'],
+			//$this->filesToLoad['requireLanguages']
+		//);
 
 		// House cleaning.
 		foreach ($this->filesToLoad as $key => $values)
@@ -711,7 +711,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			'css' => 'themes/{id}.css',
 			'requireCss' => 'plugins/{id}/prism-{id}.css',
 		];
-		
+
 		foreach ($paths as $what => $path)
 		{
 			foreach ($this->filesToLoad[$what] as $id)
@@ -730,7 +730,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		}
 
 		// Identify paths of JS files.
-		
+
 		// für ggf. später relative => true, hier ein if(). ToDo: Auch bei CSS.
 		$folder = '/js';
 
@@ -749,7 +749,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				$jsFileName['id'][] = $id;
 			}
 		}
-		
+
 		$imploder = '';
 
 		if (!$min)
@@ -767,13 +767,13 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			sort($cssFileName['id'], SORT_NATURAL | SORT_FLAG_CASE);
 			sort($jsFileName['first'], SORT_NATURAL | SORT_FLAG_CASE);
 			sort($cssFileName['first'], SORT_NATURAL | SORT_FLAG_CASE);
-			
+
 			$cssFileName = md5(implode('', $cssFileName['first'])) . '_'
 				. md5(implode('_', $cssFileName['id'])) . $min . '.css';
 			$jsFileName = md5(implode('', $jsFileName['first'])) . '_'
 				. md5(implode('_', $jsFileName['id']) . $this->filesToLoad['scriptDeclaration'])
 				. $min . '.js';
-	
+
 			$cssFileRel = $this->basepath . '/css/_combiByPlugin/' . $cssFileName;
 			$jsFileRel = $this->basepath . '/js/_combiByPlugin/' . $jsFileName;
 			$cssFileAbs = JPATH_SITE . '/' . $this->basepath . '/css/_combiByPlugin/' . $cssFileName;
@@ -784,25 +784,25 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				if ($min)
 				{
 					$minifier = new Minify\CSS();
-					
+
 					// 0:Protection against image embedding and shit.
 					$minifier->setMaxImportSize(0);
-			
+
 					foreach ($doCss as $file)
 					{
 						$minifier->add(JPATH_SITE . '/' . $file);
 					}
-					
+
 					$minifier->minify($cssFileAbs);
 				}
 				else
 				{
 					$contents = [];
-	
+
 					foreach ($doCss as $file)
 					{
 						$currentFile = JPATH_SITE . '/' . $file;
-	
+
 						if (is_file($currentFile))
 						{
 							$contents[] = "/*\n" . $file . "\n*/";
@@ -812,24 +812,24 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 					file_put_contents($cssFileAbs, implode("\n", $contents));
 				}
 			}
-			
+
 			$doCss = [$cssFileRel];
-			
+
 			if (!is_file($jsFileAbs))
 			{
 				$contents = [];
-	
+
 				foreach ($doJs as $file)
 				{
 					$currentFile = JPATH_SITE . '/' . $file;
-	
+
 					if (is_file($currentFile))
 					{
 						$contents[] = "/*\n" . $file . "\n*/";
 						$contents[] = file_get_contents($currentFile);
 					}
 				}
-				
+
 				if ($this->filesToLoad['scriptDeclaration'])
 				{
 					if ($min)
@@ -844,7 +844,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 				file_put_contents($jsFileAbs, implode(";\n", $contents));
 			}
-	
+
 			$doJs = [$jsFileRel];
 		}
 
@@ -853,23 +853,35 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		foreach ($doCss as $file)
 		{
 			HTMLHelper::_('stylesheet', $file, $attribs);
+
+			// Schlechte Krücke, um doppelten Lauf zu unterbinden. Bspw. Modul
+			$this->count++;
 		}
 
 		foreach ($doJs as $file)
 		{
 			HTMLHelper::_('script', $file, $attribs);
+
+			// Schlechte Krücke, um doppelten Lauf zu unterbinden. Bspw. Modul
+			$this->count++;
 		}
-		
+
 		if($howToLoad !== 'combined' && $this->filesToLoad['scriptDeclaration'])
 		{
 			Factory::getDocument()->addScriptDeclaration(
 				$this->filesToLoad['scriptDeclaration']. ';'
 			);
+
+			// Schlechte Krücke, um doppelten Lauf zu unterbinden. Bspw. Modul
+			$this->count++;
 		}
-		
+
 		if ($this->replace['what'])
 		{
 			$article->text = str_replace($this->replace['what'], $this->replace['with'], $article->text);
+
+			// Schlechte Krücke, um doppelten Lauf zu unterbinden. Bspw. Modul
+			$this->count++;
 		}
 	}
 }
