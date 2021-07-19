@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="3.9" type="plugin" group="content" method="upgrade">
-	<name>{{nameUpper}}</name>
-	<author>{{authorName}}</author>
-	<creationDate>{{creationDate}}</creationDate>
-	<copyright>{{copyright}}</copyright>
-	<license>{{licenseLong}}</license>
-	<authorUrl>{{authorUrl}}</authorUrl>
-	<version>{{version}}</version>
-	<description>{{nameUpper}}_XML_DESC</description>
+	<name>PLG_CONTENT_PRISMHIGHLIGHTERGHSVS</name>
+	<author>G@HService Berlin Neukölln, Volkmar Volli Schlothauer</author>
+	<creationDate>2020-09-03</creationDate>
+	<copyright>(C) 2020, G@HService Berlin Neukölln, Volkmar Volli Schlothauer.</copyright>
+	<license>GNU General Public License version 3 or later; see LICENSE.txt.</license>
+	<authorUrl>https://www.ghsvs.de</authorUrl>
+	<version>2021.07.18</version>
+	<description>PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_XML_DESC</description>
 
 	<versionHistory>
-		https://updates.ghsvs.de/changelog.php?file={{name}}
+		https://updates.ghsvs.de/changelog.php?file=plg_content_prismhighlighterghsvs
 	</versionHistory>
 
-	<updateservers><server type="extension" priority="1" name="{{nameUpper}}">https://raw.githubusercontent.com/GHSVS-de/upadateservers/master/{{name}}-update.xml</server></updateservers>
+	<updateservers><server type="extension" priority="1" name="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS">https://raw.githubusercontent.com/GHSVS-de/upadateservers/master/plg_content_prismhighlighterghsvs-update.xml</server></updateservers>
 
-	<changelogurl>https://raw.githubusercontent.com/GHSVS-de/upadateservers/master/{{name}}-changelog.xml</changelogurl>
+	<changelogurl>https://raw.githubusercontent.com/GHSVS-de/upadateservers/master/plg_content_prismhighlighterghsvs-changelog.xml</changelogurl>
 
-	<infourl>https://github.com/GHSVS-de/{{name}}#readme</infourl>
+	<infourl>https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs#readme</infourl>
 
 	<downloadUrl>
-	https://github.com/GHSVS-de/{{name}}/raw/{{version}}/dist/{{zipFilename}}
+	https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs/raw/2021.07.18/dist/plg_content_prismhighlighterghsvs-2021.07.18_1.24.1.zip
 	</downloadUrl>
 
 	<versionCompare>
-	https://github.com/GHSVS-de/{{name}}/compare/{{versionCompare}}...{{version}}
+	https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs/compare/2021.07.07...2021.07.18
 	</versionCompare>
 
 	<scriptfile>installerScript.php</scriptfile>
-	<minimumPhp>{{minimumPhp}}</minimumPhp>
-	<maximumPhp>{{maximumPhp}}</maximumPhp>
-	<minimumJoomla>{{minimumJoomla}}</minimumJoomla>
-	<maximumJoomla>{{maximumJoomla}}</maximumJoomla>
-	<allowDowngrades>{{allowDowngrades}}</allowDowngrades>
+	<minimumPhp>7.3.0</minimumPhp>
+	<maximumPhp></maximumPhp>
+	<minimumJoomla>3.9.0</minimumJoomla>
+	<maximumJoomla></maximumJoomla>
+	<allowDowngrades>1</allowDowngrades>
 
 	<files>
-		<filename plugin="{{filename}}">{{filename}}.php</filename>
+		<filename plugin="prismhighlighterghsvs">prismhighlighterghsvs.php</filename>
 		<folder>fields</folder>
 		<folder>Helper</folder>
 		<folder>language</folder>
@@ -46,7 +46,7 @@
 		<filename>LICENSE.txt</filename>
 	</files>
 
-	<media destination="{{name}}" folder="media">
+	<media destination="plg_content_prismhighlighterghsvs" folder="media">
 		<folder>css</folder>
 		<folder>js</folder>
 		<folder>json</folder>
@@ -57,7 +57,7 @@
 
 	<config>
 
-		<fields name="params" addfieldpath="plugins/content/{{filename}}/fields">
+		<fields name="params" addfieldpath="plugins/content/prismhighlighterghsvs/fields">
 
 			<fieldset name="thanks" label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FIELDSET_TANKS_AND_LICENSES">
 				<field name="spacerthanks" type="plgContentPrismHighlighterGhsvs.longdescription"

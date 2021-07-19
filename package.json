@@ -3,6 +3,14 @@
 	"nameReal": "plg_content_prismhighlighterghsvs",
 	"filename": "prismhighlighterghsvs",
 	"version": "2021.07.18",
+	"versionCompare": "2021.07.07",
+	"update" : {
+		"type": "plugin",
+		"folder": "content",
+		"client": "site",
+		"tag": "stable",
+		"targetplatform": ".*"
+	},
 	"minimumPhp": "7.3.0",
 	"maximumPhp": "",
 	"minimumJoomla": "3.9.0",
@@ -34,7 +42,7 @@
 		"prismjs"
 	],
 	"private": false,
-	"description": "Joomla content plugin. Syntax highlightning of code snippets. Uses JS library Prismjs. Uses PHP library laminas/laminas-dom.",
+	"description": "Joomla content plugin. Syntax highlightning of code snippets. Uses JS library Prismjs (prism.com). Uses PHP library laminas/laminas-dom.",
 	"license": "GPL-3.0",
 	"repository": {
 		"type": "git",
