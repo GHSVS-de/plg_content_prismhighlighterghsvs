@@ -52,21 +52,8 @@ composer install
 - `cd ../` if you're still in `_composer/`.
 - `node build.js`
 - New, installable ZIP is in `./dist` afterwards.
-- FYI: Packed files for this ZIP can be seen in `./package`. **But only if you disable deletion of this folder at the end of `build.js`**.s
-
-
-
-
-- Run `ncu` and `ncu -u` to bump versions if updates for PrismJS/prism or zenorocha/clipboard.js.
-- Run npm install
-- Adapt package.json (infos like version of Joomla plugin).
-- run node build.js.
-
-#####
-- New ZIP is in `/dist/`
-- FYI: Packed files for this ZIP can be seen in `/package/`.
-- The second version after underscore in zip name is used prismjs version.
-
+- The second version after underscore in zip filename is the used prismjs version.
+- All packed files for this ZIP can be seen in `./package`. **But only if you disable deletion of this folder at the end of `build.js`**.s
 - Extracts(!) of the update and changelog XML for update and changelog servers as well. Check for necessary additions!
 
 #### For Joomla update server
