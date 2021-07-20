@@ -6,7 +6,7 @@
 	<copyright>(C) 2020, G@HService Berlin Neukölln, Volkmar Volli Schlothauer.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt.</license>
 	<authorUrl>https://www.ghsvs.de</authorUrl>
-	<version>2021.07.18</version>
+	<version>2021.07.20</version>
 	<description>PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_XML_DESC</description>
 
 	<versionHistory>
@@ -20,11 +20,11 @@
 	<infourl>https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs#readme</infourl>
 
 	<downloadUrl>
-	https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs/raw/2021.07.18/dist/plg_content_prismhighlighterghsvs-2021.07.18_1.24.1.zip
+	https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs/raw/2021.07.20/dist/plg_content_prismhighlighterghsvs-2021.07.20_1.24.1.zip
 	</downloadUrl>
 
 	<versionCompare>
-	https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs/compare/2021.07.07...2021.07.18
+	https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs/compare/2021.07.18...2021.07.20
 	</versionCompare>
 
 	<scriptfile>installerScript.php</scriptfile>

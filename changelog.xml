@@ -32,9 +32,7 @@
 		</change>
 
 		<fix>
-			<item><![CDATA[
-				Temporary bug fix: When plugin method runs twice =&gt; "irritation". E.g. when a module fires content.prepare.
-			]]></item>
+
 		</fix>
 
 		<language>

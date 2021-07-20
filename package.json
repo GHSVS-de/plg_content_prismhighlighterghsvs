@@ -2,8 +2,8 @@
 	"name": "plg_content_prismhighlighterghsvs",
 	"nameReal": "plg_content_prismhighlighterghsvs",
 	"filename": "prismhighlighterghsvs",
-	"version": "2021.07.18",
-	"versionCompare": "2021.07.07",
+	"version": "2021.07.20",
+	"versionCompare": "2021.07.18",
 	"update" : {
 		"type": "plugin",
 		"folder": "content",

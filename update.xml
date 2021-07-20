@@ -1,3 +1,4 @@
+<!--{{nameUpper}} Version {{version}}-->
 	<update>
 		<name>{{nameUpper}}</name>
 		<description>{{description}}</description>
@@ -21,3 +22,4 @@
 		<targetplatform name="joomla" version="{{targetplatform}}" />
 		<php_minimum>{{php_minimum}}</php_minimum>
 	</update>
+<!--/{{nameUpper}} Version {{version}}-->
