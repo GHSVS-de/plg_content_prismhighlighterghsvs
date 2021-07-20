@@ -7,23 +7,9 @@ const recursive = require("recursive-readdir");
 const replaceXml = require('./build/replaceXml.js');
 
 const {
-	author,
-	update,
-	changelog,
-	copyright,
-	creationDate,
-	description,
 	name,
 	filename,
 	version,
-	versionCompare,
-	licenseLong,
-	minimumPhp,
-	maximumPhp,
-	minimumJoomla,
-	maximumJoomla,
-	allowDowngrades,
-	bugs
 } = require("./package.json");
 
 const manifestFileName = `${filename}.xml`;
