@@ -4,10 +4,12 @@ const util = require("util");
 const rimRaf = util.promisify(require("rimraf"));
 const chalk = require('chalk');
 const recursive = require("recursive-readdir");
+const replaceXml = require('./build/replaceXml.js');
 
 const {
 	author,
 	update,
+	changelog,
 	copyright,
 	creationDate,
 	description,
@@ -21,10 +23,11 @@ const {
 	minimumJoomla,
 	maximumJoomla,
 	allowDowngrades,
+	bugs
 } = require("./package.json");
 
 const manifestFileName = `${filename}.xml`;
-const Manifest = `./package/${manifestFileName}`;
+const Manifest = `${__dirname}/package/${manifestFileName}`;
 const pathMedia = `./media`;
 
 async function cleanOut (cleanOuts) {
@@ -237,61 +240,25 @@ async function cleanOut (cleanOuts) {
 
 	const zipFilename = `${name}-${version}_${versionSub}.zip`;
 
-	let xml = await fse.readFile(Manifest, { encoding: "utf8" });
-	xml = xml.replace(/{{name}}/g, name);
-	xml = xml.replace(/{{filename}}/g, filename);
-	xml = xml.replace(/{{nameUpper}}/g, name.toUpperCase());
-	xml = xml.replace(/{{authorName}}/g, author.name);
-	xml = xml.replace(/{{creationDate}}/g, creationDate);
-	xml = xml.replace(/{{copyright}}/g, copyright);
-	xml = xml.replace(/{{licenseLong}}/g, licenseLong);
-	xml = xml.replace(/{{authorUrl}}/g, author.url);
-	xml = xml.replace(/{{version}}/g, version);
-	xml = xml.replace(/{{versionCompare}}/g, versionCompare);
-	xml = xml.replace(/{{minimumPhp}}/g, minimumPhp);
-	xml = xml.replace(/{{maximumPhp}}/g, maximumPhp);
-	xml = xml.replace(/{{minimumJoomla}}/g, minimumJoomla);
-	xml = xml.replace(/{{maximumJoomla}}/g, maximumJoomla);
-	xml = xml.replace(/{{allowDowngrades}}/g, allowDowngrades);
-	xml = xml.replace(/{{zipFilename}}/g, zipFilename);
-
-	await fse.writeFile(Manifest, xml, { encoding: "utf8" }
-	).then(
-		answer => console.log(chalk.yellowBright(
-			`Replaced entries in ${Manifest}.`))
-	);
-
+	await replaceXml.main(Manifest, zipFilename);
 	await fse.copy(`${Manifest}`, `./dist/${manifestFileName}`).then(
 		answer => console.log(chalk.yellowBright(
 			`Copied ${manifestFileName} to ./dist.`))
 	);
 
-	await fse.copy(`./update.xml`, `./dist/update.xml`).then(
+	let xmlFile = 'update.xml';
+	await fse.copy(`./${xmlFile}`, `./dist/${xmlFile}`).then(
 		answer => console.log(chalk.yellowBright(
-			`Copied update.xml to ./dist.`))
+			`Copied ${xmlFile} to ./dist.`))
 	);
+	await replaceXml.main(`${__dirname}/dist/${xmlFile}`, zipFilename);
 
-	xml = await fse.readFile(`./dist/update.xml`, { encoding: "utf8" });
-	xml = xml.replace(/{{nameUpper}}/g, name.toUpperCase());
-	xml = xml.replace(/{{description}}/g, description);
-	xml = xml.replace(/{{element}}/g, filename);
-	xml = xml.replace(/{{type}}/g, update.type);
-	xml = xml.replace(/{{folder}}/g, update.folder);
-	xml = xml.replace(/{{client}}/g, update.client);
-	xml = xml.replace(/{{version}}/g, version);
-	xml = xml.replace(/{{name}}/g, name);
-	xml = xml.replace(/{{zipFilename}}/g, zipFilename);
-	xml = xml.replace(/{{tag}}/g, update.tag);
-	xml = xml.replace(/{{maintainer}}/g, author.name);
-	xml = xml.replace(/{{maintainerurl}}/g, author.url);
-	xml = xml.replace(/{{targetplatform}}/g, update.targetplatform);
-	xml = xml.replace(/{{php_minimum}}/g, minimumPhp);
-
-	await fse.writeFile(`./dist/update.xml`, xml, { encoding: "utf8" }
-	).then(
+	xmlFile = 'changelog.xml';
+	await fse.copy(`./${xmlFile}`, `./dist/${xmlFile}`).then(
 		answer => console.log(chalk.yellowBright(
-			`Replaced entries in ./dist/update.xml.`))
+			`Copied ${xmlFile} to ./dist.`))
 	);
+	await replaceXml.main(`${__dirname}/dist/${xmlFile}`, zipFilename);
 
 	// Zip it
 	const zip = new (require("adm-zip"))();
