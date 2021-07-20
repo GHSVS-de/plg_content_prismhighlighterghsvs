@@ -1,6 +1,6 @@
 	<update>
 		<name>PLG_CONTENT_PRISMHIGHLIGHTERGHSVS</name>
-		<description>Joomla content plugin. Syntax highlightning of code snippets. Uses JS library Prismjs. Uses PHP library laminas/laminas-dom.</description>
+		<description>Joomla content plugin. Syntax highlighting of code snippets. Uses JS library Prismjs (prism.com). Uses PHP library laminas/laminas-dom.</description>
 		<element>prismhighlighterghsvs</element>
 		<type>plugin</type>
 		<folder>content</folder>
