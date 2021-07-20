@@ -65,9 +65,10 @@ composer install
 #####
 - New ZIP is in `/dist/`
 - FYI: Packed files for this ZIP can be seen in `/package/`.
-
 - The second version after underscore in zip name is used prismjs version.
+
+- Extracts(!) of the update and changelog XML for update and changelog servers as well. Check for necessary additions!
 
 #### For Joomla update server
 - Create new release with new tag.
-- Get download link for new `dist/plg_blahaba_blubber...zip` **from newly created tag branch** and add to release description and add to update server XML.
+- Get download link for new `dist/plg_blahaba_blubber...zip` **from newly created tag branch** and add to release description.
