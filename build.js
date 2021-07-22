@@ -5,6 +5,7 @@ const rimRaf = util.promisify(require("rimraf"));
 const chalk = require('chalk');
 const recursive = require("recursive-readdir");
 const replaceXml = require('./build/replaceXml.js');
+var CleanCSS = require('clean-css');
 
 const {
 	name,
@@ -22,6 +23,44 @@ async function cleanOut (cleanOuts) {
 		await rimRaf(file).then(
 			answer => console.log(chalk.redBright(`rimrafed: ${file}.`))
 		).catch(error => console.error('Error ' + error));
+	}
+}
+
+// Nicht async!
+function minifyCSS (files, rootPath)
+{
+	for (const file of files)
+	{
+		if (
+			fse.existsSync(file) && fse.lstatSync(file).isFile() &&
+			!file.endsWith('/backend.css') &&
+			file.endsWith('.css') &&
+			!file.endsWith('.min.css')
+			//&& !fse.existsSync(file.replace(`.css`, `.min.css`))
+		){
+			const content = fse.readFileSync(file, { encoding: 'utf8' });
+			var options = { /* options */ };
+			const output = new CleanCSS(options).minify(content);
+
+			if (output.errors.length)
+			{
+				console.log(chalk.redBright(`Errors in minifyCSS()!!!!!!!!!!`));
+				console.log(chalk.redBright(file));
+				console.log(output.errors);
+				process.exit(1);
+			}
+
+			if (output.warnings.length)
+			{
+				console.log(chalk.redBright(`Warnings in minifyCSS()!!!!!!!!!!`));
+				console.log(chalk.redBright(file));
+				console.log(output.warnings);
+			}
+			let outputFile = file.replace('.css', '.min.css');
+			fse.writeFileSync(outputFile,output.styles, { encoding: 'utf8'});
+			outputFile = outputFile.replace(rootPath, '');
+			console.log(chalk.greenBright(`Minified: ${outputFile}`));
+		}
 	}
 }
 
@@ -200,6 +239,19 @@ async function cleanOut (cleanOuts) {
 		answer => console.log(chalk.yellowBright(
 			`Copied ${pathMedia} to ./package/media.`))
 	);
+
+	// ### Minify CSS - START
+	let rootPath = `${__dirname}/package/media/css`;
+
+	await recursive(rootPath, ['!*.+(css)']).then(
+		function(files) {
+			minifyCSS(files, rootPath);
+		},
+		function(error) {
+			console.error("something exploded", error);
+		}
+	);
+	// ### Minify CSS - ENDE
 
 	await console.log(chalk.cyanBright(
 		`Be patient! Composer copy actions!`));
