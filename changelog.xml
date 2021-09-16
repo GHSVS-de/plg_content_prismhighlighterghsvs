@@ -29,6 +29,11 @@
 					Compare code {{versionCompare}}...{{version}}
 				</a>
 			]]></item>
+			<item><![CDATA[
+				<a href="https://github.com/PrismJS/prism/blob/master/CHANGELOG.md">
+					Prism JS CHANGELOG.md
+				</a>
+			]]></item>
 		</change>
 
 		<fix>
