@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="3.9" type="plugin" group="content" method="upgrade">
+<extension type="plugin" group="content" method="upgrade">
 	<name>{{nameUpper}}</name>
 	<author>{{authorName}}</author>
 	<creationDate>{{creationDate}}</creationDate>
@@ -81,6 +81,8 @@
 			</fieldset><!--/long_description-->
 
 			<fieldset name="basic">
+				<field type="hidden" default="1" name="{{filename}}plugin" />
+
 				<field name="assetsbe" type="plgContentPrismHighlighterGhsvs.assetsbe" hidden="true"
 					loadjs="false" loadJQuery="false" loadcss="true" />
 
