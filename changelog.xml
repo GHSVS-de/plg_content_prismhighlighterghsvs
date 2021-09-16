@@ -57,7 +57,7 @@
 
 			<item><![CDATA[
 				<a href="https://updates.ghsvs.de/changelog.php?file={{name}}">
-					All changelogs with more infos
+					All changelogs
 				</a>
 			]]></item>
 
@@ -65,6 +65,10 @@
 				<a href="https://github.com/GHSVS-de/{{name}}/releases">
 					All releases page
 				</a>
+			]]></item>
+
+			<item><![CDATA[
+				Checksum: <span style="word-wrap:anywhere;">{{checksumEntity}}</span>
 			]]></item>
 		</note>
 
