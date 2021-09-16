@@ -2,7 +2,7 @@
 	"name": "plg_content_prismhighlighterghsvs",
 	"nameReal": "plg_content_prismhighlighterghsvs",
 	"filename": "prismhighlighterghsvs",
-	"version": "2021.07.20",
+	"version": "2021.09.16",
 	"versionCompare": "2021.07.18",
 	"update": {
 		"type": "plugin",
@@ -10,6 +10,9 @@
 		"client": "site",
 		"tag": "stable",
 		"targetplatform": ".*"
+	},
+	"releaseTxt": {
+		"title": "Joomla content plugin PrismHighlighterGhsvs"
 	},
 	"changelog": {
 		"projecturl": "https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs",
@@ -49,7 +52,7 @@
 	"homepage": "https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs#readme",
 	"keywords": [
 		"joomla",
-		"system plugin",
+		"content plugin",
 		"syntax highlighter",
 		"code highlighter",
 		"Prism javascript",
