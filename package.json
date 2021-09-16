@@ -29,9 +29,9 @@
 		]
 	},
 	"minimumPhp": "7.3.0",
-	"maximumPhp": "",
+	"maximumPhp": "8.9999.9999",
 	"minimumJoomla": "3.9.0",
-	"maximumJoomla": "",
+	"maximumJoomla": "4.9999.9999",
 	"allowDowngrades": "1",
 	"creationDate": "2020-09-03",
 	"licenseLong": "GNU General Public License version 3 or later; see LICENSE.txt.",
