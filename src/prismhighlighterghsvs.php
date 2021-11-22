@@ -263,7 +263,12 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 						/* Is a #comment (in HTML "<!--...-->") and no other
 						DOM elements after? */
 						if (
-							$result->firstChild->nodeType === 8
+							/* In some weird cases (conflicts with already rendered shortcuts
+							of other plugins like pagebreakghsvs AROUND(!) a code snippet)
+							$result->firstChild is not populated correctly. */
+							!empty($result->firstChild)
+
+							&& $result->firstChild->nodeType === 8
 							&& !$result->firstChild->nextSibling
 							// To Do: Let user decide via param?
 							&& $result->firstChild->length > 3
