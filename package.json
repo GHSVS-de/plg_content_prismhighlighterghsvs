@@ -2,14 +2,17 @@
 	"name": "plg_content_prismhighlighterghsvs",
 	"nameReal": "plg_content_prismhighlighterghsvs",
 	"filename": "prismhighlighterghsvs",
-	"version": "2021.09.16",
-	"versionCompare": "2021.07.18",
+	"version": "2021.12.17",
+	"versionCompare": "2021.09.16",
 	"update": {
 		"type": "plugin",
 		"folder": "content",
 		"client": "site",
 		"tag": "stable",
-		"targetplatform": ".*"
+		"targetplatform": [
+			"3.*",
+			"4.*"
+		]
 	},
 	"releaseTxt": {
 		"title": "Joomla content plugin PrismHighlighterGhsvs"
@@ -21,14 +24,16 @@
 		"docsDE": "",
 		"docsEN": "",
 		"lastTests": [
-			"PHP8",
-			"J3.9.29-dev",
-			"J4.0.0-rc5-dev",
+			"PHP 8.0",
+			"PHP 8.1",
+			"PHP 7.4",
+			"Joomla 3.10.4",
+			"Joomla 4.0.5",
 			"Vivaldi",
 			"Firefox"
 		]
 	},
-	"minimumPhp": "7.3.0",
+	"minimumPhp": "7.4.0",
 	"maximumPhp": "8.9999.9999",
 	"minimumJoomla": "3.9.0",
 	"maximumJoomla": "4.9999.9999",
@@ -75,14 +80,14 @@
 		"prismjs": "^1.25.0"
 	},
 	"devDependencies": {
-		"adm-zip": "0.5.6",
-		"chalk": "^4.1.2",
-		"clean-css": "^5.1.5",
-		"commander": "^8.2.0",
+		"adm-zip": "0.5.9",
+		"chalk": "<5",
+		"clean-css": "^5.2.2",
+		"commander": "^8.3.0",
 		"fs-extra": "10.0.0",
 		"mkdirp": "^1.0.4",
 		"ncp": "^2.0.0",
-		"npm-check-updates": "^11.8.5",
+		"npm-check-updates": "^12.0.5",
 		"path": "^0.12.7",
 		"recursive-readdir": "^2.2.2",
 		"rimraf": "3.0.2"

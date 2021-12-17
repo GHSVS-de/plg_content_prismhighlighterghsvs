@@ -46,6 +46,10 @@
 
 		<note>
 			<item><![CDATA[
+				Joomla-Target-Platform: {{targetplatform}}
+			]]></item>
+
+			<item><![CDATA[
 				Last tests: {{lastTests}}
 			]]></item>
 
@@ -70,6 +74,7 @@
 			<item><![CDATA[
 				Checksum: <span style="word-wrap:anywhere;">{{checksumEntity}}</span>
 			]]></item>
+
 		</note>
 
 		<remove>
