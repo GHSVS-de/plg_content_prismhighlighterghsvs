@@ -55,6 +55,8 @@
 		<filename>renewal.log</filename>
 	</media>
 
+	<namespace path="src">Joomla\Plugin\Content\Prismhighlighterghsvs</namespace>
+
 	<config>
 
 		<fields name="params" addfieldpath="plugins/content/{{filename}}/fields">

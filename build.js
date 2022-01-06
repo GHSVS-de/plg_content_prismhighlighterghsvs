@@ -1,10 +1,9 @@
 const fse = require('fs-extra');
+const pc = require('picocolors');
 const path = require('path');
-const chalk = require('chalk');
 const recursive = require("recursive-readdir");
 const replaceXml = require('./build/replaceXml.js');
 const helper = require('./build/helper.js');
-var CleanCSS = require('clean-css');
 
 const {
 	name,
@@ -14,95 +13,64 @@ const {
 
 const manifestFileName = `${filename}.xml`;
 const Manifest = `${__dirname}/package/${manifestFileName}`;
-const pathMedia = `./media`;
-
+const source = `${__dirname}/node_modules/prismjs`;
+const target = `./media`;
 let versionSub = '';
-
-// Nicht async!
-function minifyCSS (files, rootPath)
-{
-	for (const file of files)
-	{
-		if (
-			fse.existsSync(file) && fse.lstatSync(file).isFile() &&
-			!file.endsWith('/backend.css') &&
-			file.endsWith('.css') &&
-			!file.endsWith('.min.css')
-			//&& !fse.existsSync(file.replace(`.css`, `.min.css`))
-		){
-			const content = fse.readFileSync(file, { encoding: 'utf8' });
-			var options = { /* options */ };
-			const output = new CleanCSS(options).minify(content);
-
-			if (output.errors.length)
-			{
-				console.log(chalk.redBright(`Errors in minifyCSS()!!!!!!!!!!`));
-				console.log(chalk.redBright(file));
-				console.log(output.errors);
-				process.exit(1);
-			}
-
-			if (output.warnings.length)
-			{
-				console.log(chalk.redBright(`Warnings in minifyCSS()!!!!!!!!!!`));
-				console.log(chalk.redBright(file));
-				console.log(output.warnings);
-			}
-			let outputFile = file.replace('.css', '.min.css');
-			fse.writeFileSync(outputFile,output.styles, { encoding: 'utf8'});
-			outputFile = outputFile.replace(rootPath, '');
-			console.log(chalk.greenBright(`Minified: ${outputFile}`));
-		}
-	}
-}
 
 (async function exec()
 {
 	let cleanOuts = [
 		`./package`,
 		`./dist`,
-		`${pathMedia}/css/_combiByPlugin`,
-		`${pathMedia}/css/prismjs`,
-		`${pathMedia}/js/_combiByPlugin`,
-		`${pathMedia}/js/prismjs`,
-		`${pathMedia}/js/clipboard`,
-		`${pathMedia}/json/pluginCssMapJson.json`,
-		`${pathMedia}/json/aliasLanguageMap.json`,
-		`${pathMedia}/prismjs`,
+		`${target}/css/_combiByPlugin`,
+		`${target}/css/prismjs`,
+		`${target}/js/_combiByPlugin`,
+		`${target}/js/prismjs`,
+		`${target}/js/clipboard`,
+		`${target}/json/pluginCssMapJson.json`,
+		`${target}/json/aliasLanguageMap.json`,
+		`${target}/prismjs`,
 	];
 
 	await helper.cleanOut(cleanOuts);
 
-	versionSub = await helper.findVersionSub (
-		path.join(__dirname, `node_modules/prismjs/package.json`),
-			'PrismJS/prism ');
-	console.log(chalk.magentaBright(`versionSub identified as: "${versionSub}"`));
+	versionSub = await helper.findVersionSubSimple (
+		path.join(source, `package.json`),
+		'prismjs');
+	console.log(pc.magenta(pc.bold(`versionSub identified as: "${versionSub}"`)));
 
-	await fse.copy(
-		"./node_modules/clipboard/dist",
-		`${pathMedia}/js/clipboard`
+	let from = `./node_modules/clipboard/dist`;
+	let to = `${target}/js/clipboard`;
+	await fse.copy(from, to
 	).then(
-		answer => console.log(chalk.yellowBright(`Copied: Clipboard JS.`))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+		)
 	);
 
-	await fse.copy(
-		"./node_modules/prismjs/themes",
-		`${pathMedia}/css/prismjs/themes`
+	from = path.join(source, 'themes');
+	to = `${target}/css/prismjs/themes`;
+	await fse.copy(from, to
 	).then(
-		answer => console.log(chalk.yellowBright(`Copied: Prismjs /themes/ CSS.`))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}". Is pure CSS.`))
+		)
 	);
 
-	// ### Fill ./media/js/prismjs/plugins with JS files only! - START
-	await fse.copy(
-		"./node_modules/prismjs/plugins",
-		`${pathMedia}/js/prismjs/plugins`
+	// ### Fill ./media/(!)js(!)/prismjs/plugins with JS files only! - START
+	from = path.join(source, 'plugins');
+	to = `${target}/js/prismjs/plugins`;
+	await fse.copy(from, to
 	).then(
-		answer => console.log(chalk.yellowBright(`Copied: Prismjs /plugins/ inclusive CSS to JS folder for further workout.`))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}" inclusive CSS to JS folder for further workout.`))
+		)
 	);
 
-	// #### Remove copied CSS files from ./media/js/prismjs/plugins.
-	await recursive(`${pathMedia}/js/prismjs/plugins`).then(
-		function(files) {
+	// #### Remove copied CSS files from ./media/(!)js(!)/prismjs/plugins.
+	await recursive(to).then(
+		function(files)
+		{
 			let thisRegex = new RegExp('\.css$');
 
 			files.forEach((file) =>
@@ -117,26 +85,29 @@ function minifyCSS (files, rootPath)
 			});
 		},
 		function(error) {
-			console.error("something exploded", error);
+			console.error("something exploded in recursive().", error);
 		}
 	);
 
-	console.log(chalk.redBright(`Deleted CSS files inside Prismjs /plugins/js/.`));
+	console.log(pc.red(pc.bold(
+		`Deleted CSS files inside Prismjs /plugins/js/.`)));
 	// ### Fill ./media/js/prismjs/plugins with JS files only! - END
 
 	/*
 	### Fill ./media/css/prismjs/plugins with CSS files only! - START.
 	and then delete empty folders from ./media/css/prismjs/plugins
 	*/
-	await fse.copy(
-		"./node_modules/prismjs/plugins",
-		`${pathMedia}/css/prismjs/plugins`
+	to = `${target}/css/prismjs/plugins`;
+	await fse.copy(from, to
 	).then(
-		answer => console.log(chalk.yellowBright(`Copied: Prismjs /plugins/ inclusive JS to CSS folder for further workout.`))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}" inclusive JS to CSS folder for further workout.`))
+		)
 	);
 
-	await recursive(`${pathMedia}/css/prismjs/plugins`).then(
-		function(files) {
+	await recursive(to).then(
+		function(files)
+		{
 			thisRegex = new RegExp('\.js$');
 
 			files.forEach((file) =>
@@ -151,25 +122,28 @@ function minifyCSS (files, rootPath)
 			});
 		},
 		function(error) {
-			console.error("something exploded", error);
+			console.error("something exploded in recursive().", error);
 		}
 	);
 
-	console.log(chalk.redBright(`Deleted JS files inside Prismjs /plugins/css/.`));
+	console.log(pc.red(pc.bold(
+		`Deleted JS files inside Prismjs /plugins/css/.`)));
 
-	await fse.readdir(`${pathMedia}/css/prismjs/plugins`).then(
-		function(folders) {
-
+	await fse.readdir(to).then(
+		function(folders)
+		{
 			folders.forEach((folder) =>
 			{
-				let folder_ = path.join(__dirname,`${pathMedia}/css/prismjs/plugins`, folder);
+				let folder_ = path.join(__dirname, to, folder);
 				let filesInDir = fse.readdirSync(folder_);
 
 				if (!filesInDir.length)
 				{
 					fse.removeSync(folder_);
-					console.log(chalk.redBright(
-						`Deleted now empty folder ${folder} inside Prismjs /plugins/css/.`));
+					console.log(
+						pc.red(pc.bold(
+							`Deleted empty folder ${folder} inside Prismjs /plugins/css/.`))
+						);
 				}
 			})
 		}
@@ -178,103 +152,105 @@ function minifyCSS (files, rootPath)
 	### Fill ./media/css/prismjs/plugins with CSS files only! - END.
 	*/
 
-	await console.log(chalk.cyanBright(`Be patient! Some copy actions!`));
-
-	await fse.copy(
-		"./node_modules/prismjs/components",
-		`${pathMedia}/js/prismjs/components`
+	from = "./node_modules/prismjs/components";
+	to = `${target}/js/prismjs/components`;
+	await fse.copy(from, to
 	).then(
-		answer => console.log(chalk.yellowBright(
-			'Copied: Prismjs JS /components/.'))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}". Is pure JS.`))
+		)
 	);
 
-	await fse.copy(
-		"./node_modules/prismjs/components.json",
-		`${pathMedia}/prismjs/components.json`
+	from = "./node_modules/prismjs/components.json";
+	to =`${target}/prismjs/components.json`;
+	await fse.copy(from, to
 	).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied: Prismjs 'components.json'.`))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+		)
 	);
 
-	await fse.copy(
-		"./node_modules/prismjs/package.json",
-		`${pathMedia}/prismjs/package.json`
+	from = "./node_modules/prismjs/package.json";
+	to =`${target}/prismjs/package.json`;
+	await fse.copy(from, to
 	).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied: Prismjs 'package.json'.`))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+		)
 	);
 
-	await fse.copy(
-		"./node_modules/prismjs/LICENSE",
-		`${pathMedia}/prismjs/LICENSE`
+	from = "./node_modules/prismjs/LICENSE";
+	to =`${target}/prismjs/LICENSE`;
+	await fse.copy(from, to
 	).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied: Prismjs 'LICENSE'.`))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+		)
 	);
 
 	const copyToDirs = [
-		`${pathMedia}/css/_combiByPlugin`,
-		`${pathMedia}/js/_combiByPlugin`
+		`${target}/css/_combiByPlugin`,
+		`${target}/js/_combiByPlugin`
 	];
 
 	for (const file of copyToDirs)
 	{
 		await fse.copy("./_combiByPlugin", file
-		)
-		.then(
-			made => console.log(chalk.yellowBright(
-				`Created ${file}`))
+		).then(
+			answer => console.log(
+				pc.yellow(pc.bold(`Created "${file}".`))
+			)
 		);
-	};
+	}
 
-	await fse.copy(`${pathMedia}`, "./package/media"
+	to = `./package/media`;
+	await fse.copy(target, to
 	).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied ${pathMedia} to ./package/media.`))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+		)
 	);
 
-	// ### Minify CSS - START
-	let rootPath = `${__dirname}/package/media/css`;
+	await console.log(pc.cyan(pc.bold(`Be patient! Composer actions!`)));
 
-	await recursive(rootPath, ['!*.+(css)']).then(
-		function(files) {
-			minifyCSS(files, rootPath);
-		},
-		function(error) {
-			console.error("something exploded", error);
-		}
-	);
-	// ### Minify CSS - ENDE
-
-	await console.log(chalk.cyanBright(
-		`Be patient! Composer copy actions!`));
 	// Orphans:
 	fse.removeSync("./_composer/vendor/bin");
 	fse.removeSync("./_composer/vendor/matthiasmullie/minify/bin");
 	fse.removeSync("./_composer/vendor/matthiasmullie/minify/.github");
 	fse.removeSync("./_composer/vendor/laminas/laminas-zendframework-bridge/.github");
-	await fse.copy("./_composer/vendor", `./package/vendor`
+
+	from = `./_composer/vendor`;
+	to = `./package/vendor`;
+	await fse.copy(from, to
 	).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied _composer/vendor to ./package/vendor.`))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+		)
 	);
 
-	await fse.copy("./src", "./package").then(
-		answer => console.log(chalk.yellowBright(
-			`Copied ./src/* to ./package.`))
+	from = `./src`;
+	to = `./package`;
+	await fse.copy(from, to
+	).then(
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+		)
 	);
 
-	await fse.mkdir("./dist").then(
-		answer => console.log(chalk.greenBright(
-			`Created ./dist.`))
-	);
+	if (!(await fse.exists("./dist")))
+	{
+		await fse.mkdir("./dist"
+		).then(
+			answer => console.log(pc.yellow(pc.bold(`Created "./dist".`)))
+		);
+  }
 
 	const zipFilename = `${name}-${version}_${versionSub}.zip`;
 
 	await replaceXml.main(Manifest, zipFilename);
 	await fse.copy(`${Manifest}`, `./dist/${manifestFileName}`).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied "${manifestFileName}" to "./dist".`))
+		answer => console.log(pc.yellow(pc.bold(
+			`Copied "${manifestFileName}" to "./dist".`)))
 	);
 
 	// Create zip file and detect checksum then.
@@ -283,57 +259,57 @@ function minifyCSS (files, rootPath)
 	const zip = new (require('adm-zip'))();
 	zip.addLocalFolder("package", false);
 	await zip.writeZip(`${zipFilePath}`);
-	console.log(chalk.cyanBright(chalk.bgRed(
-		`"./dist/${zipFilename}" written.`)));
+	console.log(pc.cyan(pc.bold(pc.bgRed(
+		`./dist/${zipFilename} written.`))));
 
 	const Digest = 'sha256'; //sha384, sha512
 	const checksum = await helper.getChecksum(zipFilePath, Digest)
   .then(
 		hash => {
 			const tag = `<${Digest}>${hash}</${Digest}>`;
-			console.log(chalk.greenBright(`Checksum tag is: ${tag}`));
+			console.log(pc.green(pc.bold(`Checksum tag is: ${tag}`)));
 			return tag;
 		}
 	)
 	.catch(error => {
 		console.log(error);
-		console.log(chalk.redBright(`Error while checksum creation. I won't set one!`));
+		console.log(pc.red(pc.bold(
+			`Error while checksum creation. I won't set one!`)));
 		return '';
 	});
 
 	let xmlFile = 'update.xml';
 	await fse.copy(`./${xmlFile}`, `./dist/${xmlFile}`).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied "${xmlFile}" to ./dist.`))
+		answer => console.log(pc.yellow(pc.bold(
+			`Copied "${xmlFile}" to ./dist.`)))
 	);
 	await replaceXml.main(`${__dirname}/dist/${xmlFile}`, zipFilename, checksum);
 
 	xmlFile = 'changelog.xml';
 	await fse.copy(`./${xmlFile}`, `./dist/${xmlFile}`).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied "${xmlFile}" to ./dist.`))
+		answer => console.log(pc.yellow(pc.bold(
+			`Copied "${xmlFile}" to ./dist.`)))
 	);
 	await replaceXml.main(`${__dirname}/dist/${xmlFile}`, zipFilename, checksum);
 
 	xmlFile = 'release.txt';
 	await fse.copy(`./${xmlFile}`, `./dist/${xmlFile}`).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied "${xmlFile}" to ./dist.`))
+		answer => console.log(pc.yellow(pc.bold(
+			`Copied "${xmlFile}" to ./dist.`)))
 	);
 	await replaceXml.main(`${__dirname}/dist/${xmlFile}`, zipFilename, checksum);
 
 	cleanOuts = [
 		`./package`,
-		`${pathMedia}/css/_combiByPlugin`,
-		`${pathMedia}/css/prismjs`,
-		`${pathMedia}/js/_combiByPlugin`,
-		`${pathMedia}/js/prismjs`,
-		`${pathMedia}/js/clipboard`,
-		`${pathMedia}/prismjs`,
+		`${target}/css/_combiByPlugin`,
+		`${target}/css/prismjs`,
+		`${target}/js/_combiByPlugin`,
+		`${target}/js/prismjs`,
+		`${target}/js/clipboard`,
+		`${target}/prismjs`,
 	];
 	await helper.cleanOut(cleanOuts).then(
-		answer => console.log(chalk.cyanBright(chalk.bgRed(
-			`Finished. Good bye!`)))
+		answer => console.log(pc.cyan(pc.bold(pc.bgRed(
+			`Finished. Good bye!`))))
 	);
-
 })();

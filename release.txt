@@ -13,3 +13,6 @@ Checksum entities: `{{checksumEntity}}`
 - Updates XML: https://raw.githubusercontent.com/GHSVS-de/upadateservers/master/{{name}}-update.xml
 - Last tests: {{lastTests}}
 - Joomla-Target-Platform: {{targetplatform}}
+- Requires: {{requires}}
+
+- [PrismJs-CHANGELOG.md](https://github.com/PrismJS/prism/blob/master/CHANGELOG.md)

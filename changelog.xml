@@ -29,6 +29,7 @@
 					Compare code {{versionCompare}}...{{version}}
 				</a>
 			]]></item>
+
 			<item><![CDATA[
 				<a href="https://github.com/PrismJS/prism/blob/master/CHANGELOG.md">
 					Prism JS CHANGELOG.md
@@ -82,6 +83,10 @@
 		</remove>
 
 		<requirement>
+			<entry><![CDATA[
+				Requires: {{requires}}
+			]]></entry>
+
 			<entry><![CDATA[
 				minimumPhp: {{minimumPhp}}
 			]]></entry>

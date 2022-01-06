@@ -2,8 +2,8 @@
 	"name": "plg_content_prismhighlighterghsvs",
 	"nameReal": "plg_content_prismhighlighterghsvs",
 	"filename": "prismhighlighterghsvs",
-	"version": "2021.12.17",
-	"versionCompare": "2021.09.16",
+	"version": "2022.01.06",
+	"versionCompare": "2021.12.17",
 	"update": {
 		"type": "plugin",
 		"folder": "content",
@@ -15,7 +15,8 @@
 		]
 	},
 	"releaseTxt": {
-		"title": "Joomla content plugin PrismHighlighterGhsvs"
+		"title": "Joomla content plugin PrismHighlighterGhsvs",
+		"requires": []
 	},
 	"changelog": {
 		"projecturl": "https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs",
@@ -25,7 +26,6 @@
 		"docsEN": "",
 		"lastTests": [
 			"PHP 8.0",
-			"PHP 8.1",
 			"PHP 7.4",
 			"Joomla 3.10.4",
 			"Joomla 4.0.5",
@@ -44,13 +44,13 @@
 	"author": {
 		"name": "G@HService Berlin Neukölln, Volkmar Volli Schlothauer",
 		"email": "",
-		"url": "https://www.ghsvs.de"
+		"url": "https://ghsvs.de"
 	},
 	"contributors": [
 		{
 			"name": "G@HService Berlin Neukölln, Volkmar Volli Schlothauer",
 			"email": "",
-			"url": "https://www.ghsvs.de"
+			"url": "https://ghsvs.de"
 		}
 	],
 	"bugs": "https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs/issues",
@@ -77,17 +77,17 @@
 	},
 	"dependencies": {
 		"clipboard": "^2.0.8",
-		"prismjs": "^1.25.0"
+		"prismjs": "^1.26.0"
 	},
 	"devDependencies": {
 		"adm-zip": "0.5.9",
-		"chalk": "<5",
+		"picocolors": "^1.0.0",
 		"clean-css": "^5.2.2",
 		"commander": "^8.3.0",
 		"fs-extra": "10.0.0",
 		"mkdirp": "^1.0.4",
 		"ncp": "^2.0.0",
-		"npm-check-updates": "^12.0.5",
+		"npm-check-updates": "^12.1.0",
 		"path": "^0.12.7",
 		"recursive-readdir": "^2.2.2",
 		"rimraf": "3.0.2"
