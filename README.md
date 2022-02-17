@@ -19,9 +19,12 @@
 - `cd /mnt/z/git-kram/plg_content_prismhighlighterghsvs`
 
 ## node/npm updates/installation
+- if not done yet
+- - `npm install` (if needed)
+### Updates
 - `npm run g-npm-update-check` or (faster) `ncu`
-- `npm run g-ncu-override-json` (if needed) or (faster) `ncu -u`
-- `npm install` (if needed)
+- `npm run g-npm-update` (if needed) or (faster) `npm update --save-dev`
+
 
 ## composer
 - The composer.json is located in folder `./_composer`
