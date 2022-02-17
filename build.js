@@ -203,8 +203,9 @@ let versionSub = '';
 		);
 	}
 
+	from = target;
 	to = `./package/media`;
-	await fse.copy(target, to
+	await fse.copy(from, to
 	).then(
 		answer => console.log(
 			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))

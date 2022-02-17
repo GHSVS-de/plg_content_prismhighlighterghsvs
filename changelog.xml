@@ -29,12 +29,6 @@
 					Compare code {{versionCompare}}...{{version}}
 				</a>
 			]]></item>
-
-			<item><![CDATA[
-				<a href="https://github.com/PrismJS/prism/blob/master/CHANGELOG.md">
-					Prism JS CHANGELOG.md
-				</a>
-			]]></item>
 		</change>
 
 		<fix>
@@ -48,6 +42,10 @@
 		<note>
 			<item><![CDATA[
 				Joomla-Target-Platform: {{targetplatform}}
+			]]></item>
+
+			<item><![CDATA[
+				Uses: {{uses}}
 			]]></item>
 
 			<item><![CDATA[
@@ -74,6 +72,11 @@
 
 			<item><![CDATA[
 				Checksum: <span style="word-wrap:anywhere;">{{checksumEntity}}</span>
+			]]></item>
+
+			<item><![CDATA[
+				Contained packages (sub Joomla extensions):
+				{{thisPackagesHtml}}
 			]]></item>
 
 		</note>
