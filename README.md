@@ -22,7 +22,7 @@
 - if not done yet
 - - `npm install` (if needed)
 ### Updates
-- `npm run g-npm-update-check` or (faster) `ncu`
+- `npm run g-npm-update-check` or (faster) `npm outdated`
 - `npm run g-npm-update` (if needed) or (faster) `npm update --save-dev`
 
 
