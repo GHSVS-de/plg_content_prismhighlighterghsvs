@@ -13,7 +13,7 @@
 			"3.*",
 			"4.*"
 		],
-		"namespace": ""
+		"namespace": "Joomla\\Plugin\\Content\\Prismhighlighterghsvs"
 	},
 	"releaseTxt": {
 		"title": "Joomla content plugin PrismHighlighterGhsvs",
