@@ -4,8 +4,64 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "90845c2da03ef29bd4fca9a77763d062",
+    "content-hash": "0149783dc50626faa086429797dd7aa7",
     "packages": [
+        {
+            "name": "digilive/git-changelog",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DigiLive/gitChangelog.git",
+                "reference": "2f1638d02f81f167bf4ee62f324ce2fdf7a39e02"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DigiLive/gitChangelog/zipball/2f1638d02f81f167bf4ee62f324ce2fdf7a39e02",
+                "reference": "2f1638d02f81f167bf4ee62f324ce2fdf7a39e02",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "^9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DigiLive\\GitChangelog\\": "src/",
+                    "DigiLive\\GitChangelog\\Tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "DigiLive",
+                    "email": "info@digilive.nl",
+                    "homepage": "https://digilive.nl"
+                },
+                {
+                    "name": "Mario",
+                    "email": "leet31337@web.de"
+                }
+            ],
+            "description": "Generate a changelog from git commits of the local repository",
+            "keywords": [
+                "changelog",
+                "generator",
+                "git",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/DigiLive/gitChangelog/issues",
+                "source": "https://github.com/DigiLive/gitChangelog/tree/v1.0.1"
+            },
+            "time": "2021-06-09T15:07:16+00:00"
+        },
         {
             "name": "laminas/laminas-dom",
             "version": "2.12.0",
