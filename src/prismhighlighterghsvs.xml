@@ -122,6 +122,18 @@
 						<option value="0">JNO</option>
 						<option value="1">JYES</option>
 				</field>
+
+				<field name="categoryActiveSpacer" type="note" close="true"
+					class="alert alert-danger"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_CATEGORYACTIVE"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_CATEGORYACTIVE_DESC"/>
+
+				<field name="categoryActive" type="list" default="0" filter="integer"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_CATEGORYACTIVE">
+						<option value="0">JNO</option>
+						<option value="1">JYES</option>
+				</field>
+
 			</fieldset>
 
 			<fieldset name="advanced"

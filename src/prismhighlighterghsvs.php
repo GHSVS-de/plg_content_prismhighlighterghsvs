@@ -51,11 +51,20 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 	public function onContentPrepare($context, &$article, &$params, $page = 0)
 	{
+		$contexts = ['com_content.article'];
+		$views = ['article'];
+
+		if ($this->params->get('categoryActive', 0) === 1)
+		{
+			$contexts[] = 'com_content.category';
+			$views[] = 'category';
+		}
+
 		if (
-			$context !== 'com_content.article'
-			|| !$this->app->isClient('site')
-			|| $this->app->input->get('view') !== 'article'
+			!$this->app->isClient('site')
 			|| (!$this->params->get('robots', 0) && $this->app->client->robot)
+			|| !\in_array($context, $contexts)
+			|| !\in_array($this->app->input->get('view'), $views)
 			|| !isset($article->text)
 			|| !trim($article->text)
 			|| $this->app->getDocument()->getType() !== 'html'
