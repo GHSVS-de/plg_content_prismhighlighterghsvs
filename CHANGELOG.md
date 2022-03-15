@@ -1,5 +1,7 @@
 # Changelog
 
+# Changelog
+
 ## Upcoming changes (Undetermined)
 
 * "digilive/git-changelog" (b129abb)
@@ -121,3 +123,4 @@
 * Descriptions added (4822fe3)
 * First upload pre version 2020.09.10 (c5cc2ca)
 * descriptions 2 (ba15959)
+
