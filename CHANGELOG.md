@@ -11,7 +11,7 @@
 
 * Update README.md (c8dab3e)
 * Use {{namespace}}. (e092eba)
-* V2022.03.15. New experimental option "categoryActive". (bf571ed)
+* V2022.03.15. New experimental option "categoryActive". ([bf571ed](commit/bf571ed))
 
 ## 2022.02.17 (2022-02-18)
 
@@ -123,4 +123,3 @@
 * Descriptions added (4822fe3)
 * First upload pre version 2020.09.10 (c5cc2ca)
 * descriptions 2 (ba15959)
-
