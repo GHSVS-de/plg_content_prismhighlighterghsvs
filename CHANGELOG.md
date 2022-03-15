@@ -2,6 +2,10 @@
 
 ## Upcoming changes (Undetermined)
 
+* "digilive/git-changelog" (b129abb)
+
+## 2022.03.15 (2022-03-15)
+
 * Update README.md (c8dab3e)
 * Use {{namespace}}. (e092eba)
 * V2022.03.15. New experimental option "categoryActive". (bf571ed)

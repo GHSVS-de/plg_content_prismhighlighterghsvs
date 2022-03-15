@@ -14,4 +14,4 @@ $changelog = new MarkDown('../');
 
 // Build and save the changelog with all defaults.
 $changelog->build();
-$changelog->save('CHANGELOG.md');
+$changelog->save('../CHANGELOG.md');
