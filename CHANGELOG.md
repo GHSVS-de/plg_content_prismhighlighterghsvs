@@ -11,7 +11,7 @@
 
 * Update README.md (c8dab3e)
 * Use {{namespace}}. (e092eba)
-* V2022.03.15. New experimental option "categoryActive". ([bf571ed](commit/bf571ed))
+* V2022.03.15. New experimental option "categoryActive". ([bf571ed](../commit/bf571ed))
 
 ## 2022.02.17 (2022-02-18)
 
