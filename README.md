@@ -14,17 +14,17 @@
 - [Per language examples](https://prismjs.com/examples.html#per-language-examples)
 - [Plugins](https://prismjs.com/index.html#plugins)
 
+---
 # My personal build procedure (WSL 1, Debian, Win 10)
 - Prepare/adapt `./package.json`.
 - `cd /mnt/z/git-kram/plg_content_prismhighlighterghsvs`
 
 ## node/npm updates/installation
-- if not done yet
-- - `npm install` (if needed)
+If not done yet
+- `npm install` (if needed)
 ### Updates
-- `npm run g-npm-update-check` or (faster) `npm outdated`
-- `npm run g-npm-update` (if needed) or (faster) `npm update --save-dev`
-
+- `npm run updateCheck` or (faster) `npm outdated`
+- `npm run update` (if needed) or (faster) `npm update --save-dev`
 
 ## composer
 - The composer.json is located in folder `./_composer`
@@ -56,6 +56,11 @@ composer install
 - New, installable ZIP is in `./dist` afterwards.
 - The second version after underscore in zip filename is the used prismjs version.
 - All packed files for this ZIP can be seen in `./package`. **But only if you disable deletion of this folder at the end of `build.js`**.s
+
+## In experimental state (CHANGELOG.md)
+Creates a `dist/CHANGELOG.md` if you want.
+- `cd build`
+- `php git-changelog.php`
 
 #### For Joomla update server
 - Create new release with new tag.
