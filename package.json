@@ -2,8 +2,8 @@
 	"name": "plg_content_prismhighlighterghsvs",
 	"nameReal": "plg_content_prismhighlighterghsvs",
 	"filename": "prismhighlighterghsvs",
-	"version": "2022.03.15",
-	"versionCompare": "2022.02.17",
+	"version": "2022.04.18",
+	"versionCompare": "2022.03.15",
 	"update": {
 		"type": "plugin",
 		"folder": "content",
@@ -90,11 +90,11 @@
 		"adm-zip": "0.5.9",
 		"picocolors": "^1.0.0",
 		"clean-css": "^5.2.4",
-		"fs-extra": "10.0.1",
-
+		"fs-extra": "10.1.0",
 		"path": "^0.12.7",
 		"recursive-readdir": "^2.2.2",
-		"rimraf": "3.0.2"
+		"rimraf": "3.0.2",
+		"standard-version": "^9.3.2"
 	},
 	"peerDependencies": {},
 	"browserslist": []
