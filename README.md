@@ -57,12 +57,13 @@ composer install
 - The second version after underscore in zip filename is the used prismjs version.
 - All packed files for this ZIP can be seen in `./package`. **But only if you disable deletion of this folder at the end of `build.js`**.s
 
-## In experimental state (CHANGELOG.md)
-Creates a `dist/CHANGELOG.md` if you want.
-- `cd build`
-- `php git-changelog.php`
-
-## For Joomla update server
+### For Joomla update server
 - Create new release with new tag.
 - Get download link for new `dist/plg_blahaba_blubber...zip` **from newly created tag branch** and add to release description.
 - Extracts(!) of the update and changelog XML for update and changelog servers are in `./dist` as well. Check for necessary additions! Then copy/paste.
+
+## In experimental state (CHANGELOG.md)
+Creates a `dist/CHANGELOG.md` if you want.
+- `Fetch origin` in GitHub Desktop to include newest release locally!
+- `cd build`
+- `php git-changelog.php`
