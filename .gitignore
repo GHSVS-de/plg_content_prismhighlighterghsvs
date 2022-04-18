@@ -23,4 +23,5 @@ src/vendor/matthiasmullie/minify/bin
 !/dist/**
 /dist/*.xml
 /dist/*.txt
+/dist/*.md
 _composer/vendor
