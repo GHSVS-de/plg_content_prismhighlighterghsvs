@@ -83,7 +83,7 @@
 		"update": "npm update --save-dev"
 	},
 	"dependencies": {
-		"clipboard": "^2.0.10",
+		"clipboard": "^2.0.11",
 		"prismjs": "^1.28.0"
 	},
 	"devDependencies": {
