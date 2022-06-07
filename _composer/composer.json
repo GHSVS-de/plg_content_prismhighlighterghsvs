@@ -1,7 +1,6 @@
 {
     "require": {
         "laminas/laminas-dom": "^2",
-				"matthiasmullie/minify": "^1",
-				"digilive/git-changelog": "^1"
+				"matthiasmullie/minify": "^1"
     }
 }
