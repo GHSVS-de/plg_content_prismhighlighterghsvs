@@ -16,6 +16,9 @@
 
 ---
 # My personal build procedure (WSL 1, Debian, Win 10)
+
+**@since v2022.06.08: Build procedere uses local repo fork of https://github.com/GHSVS-de/buildKramGhsvs**
+
 - Prepare/adapt `./package.json`.
 - `cd /mnt/z/git-kram/plg_content_prismhighlighterghsvs`
 
