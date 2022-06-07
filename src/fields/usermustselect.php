@@ -3,7 +3,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormHelper;
 
 FormHelper::loadFieldClass('list');
@@ -27,7 +26,7 @@ class plgContentPrismHighlighterGhsvsFormFieldUserMustSelect extends JFormFieldL
 	 * @var    array
 	 * @since  3.2
 	 */
-	protected static $options = array();
+	protected static $options = [];
 
 	/**
 	 * Method to get the options to populate list
@@ -44,15 +43,16 @@ class plgContentPrismHighlighterGhsvsFormFieldUserMustSelect extends JFormFieldL
 		{
 			static::$options[$hash] = parent::getOptions();
 			$options = explode(',', $this->element['userMustSelect']);
-			
+
 			foreach ($options as $key => $value)
 			{
 				$options[$value] = $value;
 				unset($options[$key]);
 			}
-			
+
 			static::$options[$hash] = array_merge(static::$options[$hash], $options);
 		}
+
 		return static::$options[$hash];
 	}
 }

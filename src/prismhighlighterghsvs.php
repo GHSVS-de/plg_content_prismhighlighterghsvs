@@ -3,19 +3,18 @@ defined('JPATH_BASE') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\File;
-use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
-use Joomla\Registry\Registry;
-use Joomla\CMS\Utility\Utility;
-use Laminas\Dom\Query;
 use Joomla\CMS\Uri\Uri;
+use Laminas\Dom\Query;
 use MatthiasMullie\Minify;
 
 class plgContentPrismHighlighterGhsvs extends CMSPlugin
 {
 	protected $basepath = 'media/plg_content_prismhighlighterghsvs';
+
 	protected static $loaded;
+
 	protected $app;
 
 	/**
@@ -24,6 +23,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 	 * @var bool
 	*/
 	protected $goOn = false;
+
 	protected $filesToLoad = [
 		'plugin' => [],
 		'scriptDeclaration' => [],
@@ -63,14 +63,15 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		if (
 			!$this->app->isClient('site')
 			|| (!$this->params->get('robots', 0) && $this->app->client->robot)
-			|| !\in_array($context, $contexts)
-			|| !\in_array($this->app->input->get('view'), $views)
+			|| !in_array($context, $contexts)
+			|| !in_array($this->app->input->get('view'), $views)
 			|| !isset($article->text)
 			|| !trim($article->text)
 			|| $this->app->getDocument()->getType() !== 'html'
 			|| $this->app->input->getBool('print')
-		){
+		) {
 			$this->goOn = false;
+
 			return;
 		}
 
@@ -91,8 +92,10 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		// Why that? Answer: Maybe plugin later also active for modules.
 		if (!isset(self::$loaded['autoload']))
 		{
-			JLoader::register('PrismHighlighterGhsvs',
-				__DIR__ . '/Helper/PrismHighlighterGhsvsHelper.php');
+			JLoader::register(
+				'PrismHighlighterGhsvs',
+				__DIR__ . '/Helper/PrismHighlighterGhsvsHelper.php'
+			);
 			require __DIR__ . '/vendor/autoload.php';
 			self::$loaded['autoload'] = 1;
 		}
@@ -102,7 +105,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			PrismHighlighterGhsvs::renewal($this->params) !== true
 			|| !($aliasLanguageMap = PrismHighlighterGhsvs::getAliasLanguageMap())
 			|| !($pluginCssMap = PrismHighlighterGhsvs::getPluginCssMap())
-		){
+		) {
 			return;
 		}
 
@@ -132,12 +135,12 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		$forced = $this->params->get('userMustSelect', []);
 		$inlineColorToLoad = false;
 
-########## Plugin inline-color. Part 1. Advance test 1 ##########
-		if (\in_array('inline-color', $forced))
+		########## Plugin inline-color. Part 1. Advance test 1 ##########
+		if (in_array('inline-color', $forced))
 		{
 			$inlineColorToLoad = true;
 		}
-########## /Plugin inline-color ##########
+		########## /Plugin inline-color ##########
 
 		$plgConfigurations = [];
 
@@ -158,7 +161,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 					$pluginConfiguration->active
 					&& ($plugin = str_replace('(*)', '', $pluginConfiguration->plugin, $must))
 					&& $config = trim($pluginConfiguration->configuration)
-				){
+				) {
 					/* We store the configuration always here and decide later if we
 						will load it. */
 					$plgConfigurations[$plugin][] = $config;
@@ -181,7 +184,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				if (
 					$pluginConfiguration->active
 					&& ($plugin = str_replace('(*)', '', $pluginConfiguration->plugin, $must))
-				){
+				) {
 					$this->filesToLoad['plugin'][] = $plugin;
 
 					if ($config = trim($pluginConfiguration->configuration))
@@ -236,12 +239,12 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 						$collectAttribs[$key][$attribute->name][] = $attribute->value;
 					}
 
-########## Plugin inline-color. Part 2. Advance test 2 ##########
+					########## Plugin inline-color. Part 2. Advance test 2 ##########
 					if ($inlineColorToLoad && !isset($hasColor) && strpos($result->textContent, 'color') !== false)
 					{
 						$hasColor = true;
 					}
-########## /Plugin inline-color ##########
+					########## /Plugin inline-color ##########
 
 					if ($hasParent && $result->parentNode->tagName === 'pre')
 					{
@@ -268,7 +271,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 						attributes but characteristic nodes.
 						*/
 
-########## Plugin unescaped-markup ##########
+						########## Plugin unescaped-markup ##########
 						/* Is a #comment (in HTML "<!--...-->") and no other
 						DOM elements after? */
 						if (
@@ -281,10 +284,10 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 							&& !$result->firstChild->nextSibling
 							// To Do: Let user decide via param?
 							&& $result->firstChild->length > 3
-						){
+						) {
 							$this->filesToLoad['plugin'][] = 'unescaped-markup';
 						}
-########## /Plugin unescaped-markup ##########
+						########## /Plugin unescaped-markup ##########
 					}
 					else
 					{
@@ -303,13 +306,13 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				}
 
 				// reset indices for following actions.
-				$collectAttribs = \array_values($collectAttribs);
+				$collectAttribs = array_values($collectAttribs);
 			}
 		}
 
-		if($hasPRE)
+		if ($hasPRE)
 		{
-########## Plugin file-highlight ##########
+			########## Plugin file-highlight ##########
 			$fileHighlightFound = PrismHighlighterGhsvs::checkPREWithFile(
 				'file-highlight',
 				'data-src',
@@ -321,9 +324,9 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				$plgConfigurations,
 				$this->replace
 			);
-########## /Plugin file-highlight ##########
+			########## /Plugin file-highlight ##########
 
-########## Plugin jsonp-highlight ##########
+			########## Plugin jsonp-highlight ##########
 			PrismHighlighterGhsvs::checkPREWithFile(
 				'jsonp-highlight',
 				'data-jsonp',
@@ -335,7 +338,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				$plgConfigurations,
 				$this->replace
 			);
-########## /Plugin jsonp-highlight ##########
+			########## /Plugin jsonp-highlight ##########
 		}
 
 		// Nothing to do.
@@ -408,18 +411,18 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			$this->filesToLoad['css'] = (array) $theme;
 		}
 
-########## Plugin inline-color. Part 3 ##########
+		########## Plugin inline-color. Part 3 ##########
 		if ($inlineColorToLoad && !isset($hasColor))
 		{
-			unset($forced[ \array_keys($forced, 'inline-color')[0] ]);
+			unset($forced[ array_keys($forced, 'inline-color')[0] ]);
 		}
-########## /Plugin inline-color ##########
+		########## /Plugin inline-color ##########
 
 		if ($forced)
 		{
 			$this->filesToLoad['plugin']
 			=
-			\array_merge(
+			array_merge(
 				$this->filesToLoad['plugin'],
 				$forced
 			);
@@ -430,7 +433,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		{
 			$this->filesToLoad['plugin']
 			=
-			\array_merge(
+			array_merge(
 				$this->filesToLoad['plugin'],
 				$forced
 			);
@@ -449,12 +452,12 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			// Shortcut for the lazy ones.
 			$classesAll = $attribs['classesAll'];
 
-########## Plugin match-braces ##########
-				if (strpos($classesAll, ' match-braces '))
-				{
-					$this->filesToLoad['plugin'][] = 'match-braces';
-				}
-########## /Plugin match-braces ##########
+			########## Plugin match-braces ##########
+			if (strpos($classesAll, ' match-braces '))
+			{
+				$this->filesToLoad['plugin'][] = 'match-braces';
+			}
+			########## /Plugin match-braces ##########
 
 			// Only <pre><code> combinations.
 			if ($attribs['isInlineCode'] === 0)
@@ -465,9 +468,9 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				{
 					$this->filesToLoad['plugin'][] = 'treeview';
 				}
-########## /Plugin treeview ##########
+				########## /Plugin treeview ##########
 
-########## Plugin diff-highlight ##########
+				########## Plugin diff-highlight ##########
 				// It has a class like language-diff-javascript?
 				if (strpos($classesAll, ' language-diff-') !== false)
 				{
@@ -489,14 +492,14 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				{
 					$this->filesToLoad['plugin'][] = 'diff-highlight';
 				}
-########## /Plugin diff-highlight ##########
+				########## /Plugin diff-highlight ##########
 
-########## Plugin line-numbers ##########
+				########## Plugin line-numbers ##########
 				if (strpos($classesAll, ' line-numbers '))
 				{
 					$this->filesToLoad['plugin'][] = 'line-numbers';
 				}
-########## /Plugin line-numbers ##########
+				########## /Plugin line-numbers ##########
 
 				/* Some plugins work also with nonsense language classes
 				like language-fifipaffi but need a language class to work.
@@ -511,37 +514,33 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 						if (
 							(isset($attribs['data-user']) && isset($attribs['data-host']))
 							|| isset($attribs['data-prompt'])
-						){
+						) {
 							$this->filesToLoad['plugin'][] = 'command-line';
 						}
 					}
-########## /Plugin command-line ##########
-
+					########## /Plugin command-line ##########
 				} //hasLang
 
-########## Plugin line-highlight ##########
+				########## Plugin line-highlight ##########
 				if (!empty($attribs['data-line']))
 				{
 					$this->filesToLoad['plugin'][] = 'line-highlight';
 				}
-########## /Plugin line-highlight ##########
-
+				########## /Plugin line-highlight ##########
 			} // if ($attribs['isInlineCode'] === 0) END
-
 		} // foreach ($collectAttribs as $key => $attribs) END
 
 		// autoloader makes no sense if there is no language class (= no language found).
 		if (
 			$howToLoad === 'autoloader'
 			&& $this->filesToLoad['language']
-		){
+		) {
 			$this->filesToLoad['plugin'][] = 'autoloader';
 			$this->filesToLoad['scriptDeclaration'][]
 				= "Prism.plugins.autoloader.languages_path = " . JUri::root(true) . $this->basepath . "/prismjs/components';";
 
 			$this->filesToLoad['language'] = [];
 		}
-
 
 		########## Collect languagedependencies. ##########
 		// ToDo: I don't know if autoloader loads dependencies, too. If yes ignore this routine if autoloader active!
@@ -602,7 +601,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 							if (
 								$requireKey === 'requirePlugins'
 								&& (int) $pluginCssMap[$require]['noCSS'] === 0
-							){
+							) {
 								$this->filesToLoad['requireCss'][] = $require;
 							}
 						}
@@ -612,13 +611,13 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		}
 
 		// Hierarchy.
-		$this->filesToLoad['requireLanguages'] = \array_reverse($this->filesToLoad['requireLanguages']);
-		$this->filesToLoad['requirePlugins'] = \array_reverse($this->filesToLoad['requirePlugins']);
+		$this->filesToLoad['requireLanguages'] = array_reverse($this->filesToLoad['requireLanguages']);
+		$this->filesToLoad['requirePlugins'] = array_reverse($this->filesToLoad['requirePlugins']);
 
 		//ToDo: Why just 'mustLanguages'????
 		if ($this->filesToLoad['mustLanguages'])
 		{
-			$this->filesToLoad['language'] = \array_merge(
+			$this->filesToLoad['language'] = array_merge(
 				$this->filesToLoad['mustLanguages'],
 				$this->filesToLoad['language']
 			);
@@ -633,7 +632,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			return;
 		}
 
-		\array_unshift($this->filesToLoad['requireJs'], 'core');
+		array_unshift($this->filesToLoad['requireJs'], 'core');
 
 		foreach ($plgConfigurations as $plg => $config)
 		{
@@ -644,24 +643,24 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		}
 
 		$this->filesToLoad['plugin'] =
-			\array_merge(
+			array_merge(
 				$this->filesToLoad['requirePlugins'],
 				$this->filesToLoad['plugin']
-		);
+			);
 		// ToDo: For easier debugging. Remove?
 		//unset($this->filesToLoad['requirePlugins']);
 
 		$this->filesToLoad['language'] =
-			\array_merge(
+			array_merge(
 				$this->filesToLoad['requireJs'],
 				$this->filesToLoad['requireLanguages'],
 				$this->filesToLoad['language']
-		);
+			);
 		// ToDo: For easier debugging. Remove?
 		// Problems with PHP8 when second run, e.g. a module.
 		//unset(
-			//$this->filesToLoad['requireJs'],
-			//$this->filesToLoad['requireLanguages']
+		//$this->filesToLoad['requireJs'],
+		//$this->filesToLoad['requireLanguages']
 		//);
 
 		// House cleaning.
@@ -669,20 +668,20 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		{
 			if ($values)
 			{
-				$this->filesToLoad[$key] = \array_unique($this->filesToLoad[$key]);
+				$this->filesToLoad[$key] = array_unique($this->filesToLoad[$key]);
 			}
 		}
 
-########## Plugin previewers. Unload? ##########
+		########## Plugin previewers. Unload? ##########
 		// "This plugin is compatible with CSS, Less, Markup attributes, Sass, Scss and Stylus."
 		PrismHighlighterGhsvs::checkPluginWithLanguageDependency(
 			'previewers',
 			['css', 'less', 'markup', 'sass', 'scss', 'stylus'],
 			$this->filesToLoad
 		);
-########## /Plugin previewers ##########
+		########## /Plugin previewers ##########
 
-########## Plugin wpd. Unload? ##########
+		########## Plugin wpd. Unload? ##########
 		/* This plugin is compatible with CSS, SCSS, Markup.
 		It adds links like https://webplatform.github.io/docs/css/atrules/import/
 		to some keywords. */
@@ -691,29 +690,29 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			['css', 'scss', 'markup'],
 			$this->filesToLoad
 		);
-########## /Plugin wpd ##########
+		########## /Plugin wpd ##########
 
-########## Plugin download-button. Unload? ##########
+		########## Plugin download-button. Unload? ##########
 		if (
 			!$fileHighlightFound
-			&& ($arrayKeys = \array_keys($this->filesToLoad['plugin'], 'download-button'))
-		){
+			&& ($arrayKeys = array_keys($this->filesToLoad['plugin'], 'download-button'))
+		) {
 			unset($this->filesToLoad['plugin'][$arrayKeys[0]]);
 		}
-########## /Plugin download-button ##########
+		########## /Plugin download-button ##########
 
-########## Plugin toolbar. Unload? ##########
+		########## Plugin toolbar. Unload? ##########
 		if (
-			($arrayKeys = \array_keys($this->filesToLoad['plugin'], 'toolbar'))
-			&& !\in_array('download-button', $this->filesToLoad['plugin'])
-			&& !\in_array('copy-to-clipboard', $this->filesToLoad['plugin'])
-		){
+			($arrayKeys = array_keys($this->filesToLoad['plugin'], 'toolbar'))
+			&& !in_array('download-button', $this->filesToLoad['plugin'])
+			&& !in_array('copy-to-clipboard', $this->filesToLoad['plugin'])
+		) {
 			unset(
 				$this->filesToLoad['plugin'][$arrayKeys[0]],
 				$this->filesToLoad['requireCss'][$arrayKeys[0]]
 			);
 		}
-########## /Plugin toolbar ##########
+		########## /Plugin toolbar ##########
 
 		$min = JDEBUG ? '' : '.min';
 		$version = JDEBUG ? time() : 'auto';
@@ -731,7 +730,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			foreach ($this->filesToLoad[$what] as $id)
 			{
 				$doCss[] = $this->basepath . '/css/prismjs/' . str_replace('{id}', $id, $path);
-				$cssFileName['first'][] = strtoupper($what[0]) . $id[0];;
+				$cssFileName['first'][] = strtoupper($what[0]) . $id[0];
 				$cssFileName['id'][] = $id;
 			}
 		}
@@ -758,7 +757,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		{
 			foreach ($this->filesToLoad[$what] as $id)
 			{
-				$doJs[] = str_replace(array('{folder}', '{id}'), array($folder, $id), $path);
+				$doJs[] = str_replace(['{folder}', '{id}'], [$folder, $id], $path);
 				$jsFileName['first'][] = strtoupper($what[0]) . $id[0];
 				$jsFileName['id'][] = $id;
 			}
@@ -776,7 +775,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 		if ($howToLoad === 'combined')
 		{
-				// Sort for file names only(!)? Doesn't match the ordering of combined files.
+			// Sort for file names only(!)? Doesn't match the ordering of combined files.
 			sort($jsFileName['id'], SORT_NATURAL | SORT_FLAG_CASE);
 			sort($cssFileName['id'], SORT_NATURAL | SORT_FLAG_CASE);
 			sort($jsFileName['first'], SORT_NATURAL | SORT_FLAG_CASE);
@@ -880,10 +879,10 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			$this->count++;
 		}
 
-		if($howToLoad !== 'combined' && $this->filesToLoad['scriptDeclaration'])
+		if ($howToLoad !== 'combined' && $this->filesToLoad['scriptDeclaration'])
 		{
 			Factory::getDocument()->addScriptDeclaration(
-				$this->filesToLoad['scriptDeclaration']. ';'
+				$this->filesToLoad['scriptDeclaration'] . ';'
 			);
 
 			// Schlechte Krücke, um doppelten Lauf zu unterbinden. Bspw. Modul

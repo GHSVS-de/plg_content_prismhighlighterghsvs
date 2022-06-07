@@ -53,6 +53,13 @@ OR
 composer install
 ```
 
+## PHP Codestyle
+If you think it's worth it.
+- `cd /mnt/z/git-kram/php-cs-fixer-ghsvs`
+- `npm run plg_content_prismhighlighterghsvsDry` (= dry test run).
+- `npm run plg_content_prismhighlighterghsvs` (= cleans code).
+- `cd /mnt/z/git-kram/plg_content_prismhighlighterghsvs` (back to this repo).
+
 ## Build installable ZIP package
 - `cd ../` if you're still in `_composer/`.
 - `node build.js`

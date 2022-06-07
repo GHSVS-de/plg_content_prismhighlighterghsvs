@@ -1,34 +1,35 @@
 <?php
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Filesystem\File;
+use Joomla\CMS\Filesystem\Folder;
 use Joomla\CMS\Uri\Uri;
 
 class PrismHighlighterGhsvs
 {
 	protected static $basepath = 'media/plg_content_prismhighlighterghsvs';
-	
+
 	/**
 	 * Path of JSON file with aliases to language shortcut map. 
 	 * 
 	 * @var string
 	*/
 	protected static $aliasLanguageMapJson;
-	
+
 	protected static $pluginCssMapJson;
+
 	protected static $renewalFile;
 
 	protected static $loaded;
-	
+
 	/**
 	 * Remember the starting point of dependency detection of a plugin. 
 	 * 
 	 * @var string
 	 */
 	protected static $debuggerFirst;
-	
-  public static function init()
+
+	public static function init()
 	{
 		if (!isset(self::$loaded[__METHOD__]))
 		{
@@ -37,8 +38,8 @@ class PrismHighlighterGhsvs
 			self::$renewalFile = JPATH_SITE . '/' . self::$basepath . '/renewal.log';
 			self::$loaded[__METHOD__] = 1;
 		}
-  }
-	
+	}
+
 	/**
    * Detect all languages plus possible aliases.
 	 * Collect in array [markup => markup, html => markup, ....]
@@ -64,12 +65,12 @@ class PrismHighlighterGhsvs
 
 			$components = json_decode(
 				$components,
-				// asArray = 
+				// asArray =
 				true
 			);
 
 			$exclude = ['meta' => 1];
-			
+
 			// aliasLanguageMap START
 			foreach ($components['languages'] as $language => $infos)
 			{
@@ -77,9 +78,9 @@ class PrismHighlighterGhsvs
 				{
 					continue;
 				}
-				
+
 				$aliasLanguageMap[$language]['alias'] = $language;
-				
+
 				if (isset($infos['title']))
 				{
 					$aliasLanguageMap[$language]['aliasTitle'] = $infos['title'];
@@ -88,15 +89,15 @@ class PrismHighlighterGhsvs
 				{
 					$aliasLanguageMap[$language]['aliasTitle'] = $language;
 				}
-				
+
 				if (isset($infos['alias']))
 				{
 					$infos['alias'] = (array) $infos['alias'];
-					
+
 					foreach ($infos['alias'] as $alias)
 					{
 						$aliasLanguageMap[$alias]['alias'] = $language;
-						
+
 						if (isset($infos['aliasTitles'][$alias]))
 						{
 							$aliasLanguageMap[$alias]['aliasTitle'] = $infos['aliasTitles'][$alias];
@@ -107,10 +108,10 @@ class PrismHighlighterGhsvs
 						}
 					}
 				}
-				
+
 				// Reset array.
-				$dependencies = array();
-				
+				$dependencies = [];
+
 				// Reset starting point.
 				self::$debuggerFirst = $language;
 
@@ -118,7 +119,7 @@ class PrismHighlighterGhsvs
 
 				if ($dependencies)
 				{
-					$aliasLanguageMap[$language] = \array_merge($aliasLanguageMap[$language], $dependencies);
+					$aliasLanguageMap[$language] = array_merge($aliasLanguageMap[$language], $dependencies);
 				}
 			}
 
@@ -131,7 +132,7 @@ class PrismHighlighterGhsvs
 				return false;
 			}
 			// aliasLanguageMap END
-			
+
 			// pluginCssMap START
 			foreach ($components['plugins'] as $plugin => $infos)
 			{
@@ -139,8 +140,9 @@ class PrismHighlighterGhsvs
 				{
 					continue;
 				}
-				
+
 				unset($infos['owner']);
+
 				if (!isset($infos['noCSS']))
 				{
 					$infos['noCSS'] = 0;
@@ -149,16 +151,16 @@ class PrismHighlighterGhsvs
 				{
 					$infos['noCSS'] = 1;
 				}
-				
+
 				// Special dependencies.
 				if ($plugin === 'copy-to-clipboard')
 				{
 					$infos['requireVendorJs'] = 'clipboard/clipboard';
 				}
-				
+
 				// Reset array.
-				$dependencies = array();
-				
+				$dependencies = [];
+
 				// Reset starting point.
 				self::$debuggerFirst = $plugin;
 
@@ -166,7 +168,7 @@ class PrismHighlighterGhsvs
 
 				if ($dependencies)
 				{
-					$infos = \array_merge($infos, $dependencies);
+					$infos = array_merge($infos, $dependencies);
 				}
 
 				$pluginCssMap[$plugin] = $infos;
@@ -187,6 +189,7 @@ class PrismHighlighterGhsvs
 		{
 			return true;
 		}
+
 		return false;
 	}
 
@@ -195,8 +198,10 @@ class PrismHighlighterGhsvs
 		if (self::mapsToFiles() === true)
 		{
 			$content = file_get_contents(self::$aliasLanguageMapJson);
+
 			return json_decode($content, true);
 		}
+
 		return false;
 	}
 
@@ -205,10 +210,13 @@ class PrismHighlighterGhsvs
 		if (self::mapsToFiles() === true)
 		{
 			$content = file_get_contents(self::$pluginCssMapJson);
+
 			return json_decode($content, true);
 		}
+
 		return false;
 	}
+
 	/**
 	* Collects recursively dependencies/requirements (other plugins OR languages) of a single plugin.
 	*
@@ -223,7 +231,7 @@ class PrismHighlighterGhsvs
 		$toCheck,
 		&$collect,
 		$first = false
-	){
+	) {
 		$doCollect = $toCheck !== self::$debuggerFirst;
 
 		if (!empty($components['plugins'][$toCheck]))
@@ -234,12 +242,12 @@ class PrismHighlighterGhsvs
 		{
 			$requireKey = 'languages';
 		}
-		
+
 		if ($doCollect && $requireKey)
 		{
 			$collect['require' . ucfirst($requireKey)][] = $toCheck;
 		}
-		
+
 		if (isset($components[$requireKey][$toCheck]['require']))
 		{
 			foreach ((array) $components[$requireKey][$toCheck]['require'] as $require)
@@ -263,7 +271,7 @@ class PrismHighlighterGhsvs
 		$toCheck,
 		&$collect,
 		$first = false
-	){
+	) {
 		$doCollect = $toCheck !== self::$debuggerFirst;
 
 		if (!empty($components['languages'][$toCheck]))
@@ -275,12 +283,12 @@ class PrismHighlighterGhsvs
 		{
 			$requireKey = 'plugins';
 		}
-		
+
 		if ($doCollect && $requireKey)
 		{
 			$collect['require' . ucfirst($requireKey)][] = $toCheck;
 		}
-		
+
 		if (isset($components[$requireKey][$toCheck]['require']))
 		{
 			foreach ((array) $components[$requireKey][$toCheck]['require'] as $require)
@@ -289,6 +297,7 @@ class PrismHighlighterGhsvs
 			}
 		}
 	}
+
 	/*
 	 * Does a string contain language- and/or lang- depending on the plugin parameters.
 	 *
@@ -311,6 +320,7 @@ class PrismHighlighterGhsvs
 				{
 					return true;
 				}
+
 				return false;
 				break;
 			case 2:
@@ -318,6 +328,7 @@ class PrismHighlighterGhsvs
 				{
 					return true;
 				}
+
 				return false;
 				break;
 			default:
@@ -325,6 +336,7 @@ class PrismHighlighterGhsvs
 				{
 					return true;
 				}
+
 				return false;
 		}
 	}
@@ -337,30 +349,30 @@ class PrismHighlighterGhsvs
 			if ($force || self::renewalCheck($params))
 			{
 				$root = JPATH_SITE . '/' . self::$basepath;
-	
+
 				$forceRenewals = [
 					'/js/_combiByPlugin',
 					'/css/_combiByPlugin',
 				];
-	
+
 				foreach ($forceRenewals as $item)
 				{
 					if (is_dir($root . $item))
 					{
 						Folder::delete($root . $item);
 					}
-					
+
 					if (!is_dir($root . $item))
 					{
 						Folder::create($root . $item);
 					}
 				}
-	
+
 				$forceRenewals = [
 					'/json/aliasLanguageMap.json',
 					'/json/pluginCssMapJson.json',
 				];
-	
+
 				foreach ($forceRenewals as $item)
 				{
 					if (is_file($root . $item))
@@ -368,7 +380,7 @@ class PrismHighlighterGhsvs
 						File::delete($root . $item);
 					}
 				}
-				
+
 				if ($force)
 				{
 					self::init();
@@ -377,6 +389,7 @@ class PrismHighlighterGhsvs
 			}
 			self::$loaded['renewalDone'] = 1;
 		}
+
 		return true;
 	}
 
@@ -394,7 +407,7 @@ class PrismHighlighterGhsvs
 			if ($params->get('forceRenewal', 0) === 1)
 			{
 				self::$loaded['forceRenewal'] = true;
-				
+
 				if ($writeIt)
 				{
 					$write = -1;
@@ -406,7 +419,7 @@ class PrismHighlighterGhsvs
 			{
 				self::$loaded['forceRenewal'] = true;
 				$write = -1;
-				
+
 				if ($renewalDays)
 				{
 					$write = time() + $renewalDays;
@@ -435,12 +448,13 @@ class PrismHighlighterGhsvs
 			{
 				self::$loaded['forceRenewal'] = false;
 			}
-			
+
 			if (isset($write))
 			{
 				file_put_contents(self::$renewalFile, $write);
 			}
 		}
+
 		return self::$loaded['forceRenewal'];
 	}
 
@@ -463,7 +477,7 @@ class PrismHighlighterGhsvs
 		$aliasLanguageMap,
 		&$plgConfigurations,
 		&$replace
-	){
+	) {
 		$collectPreAttribs = [];
 		/* ToDo: "/" is a compromise because laminas-dom doesn't understand
 		all CSS matches selectors and creates a fatal error if "wrong". */
@@ -471,30 +485,30 @@ class PrismHighlighterGhsvs
 		$results = $dom->execute($tags);
 
 		if (count($results))
-	{
+		{
 			$key = count($collectAttribs);
-			
+
 			// $result is always a PRE[data-jsonp] element.
 			foreach ($results as $result)
-		{
+			{
 				// Das ist zu hart. JCE braucht ein &nbsp;, damit er nicht
 				// den gesamten pre-Tag löscht.
 				/*if ($result->firstChild)
 				{
 					continue;
 				}*/
-				
+
 				$key++;
 				$collectPreAttribs[$key]['isInlineCode'] = 0;
-				
+
 				// Must collect for later further attributes checks.
 				foreach ($result->attributes as $attribute)
 				{
 					$collectPreAttribs[$key][$attribute->name][] = trim($attribute->value);
 				}
-				
+
 				$filesToLoad['plugin'][] = $plugin;
-				
+
 				// Shall we load a language. Check Atrributes.
 				foreach ($collectPreAttribs as $key => $attribs)
 				{
@@ -503,7 +517,7 @@ class PrismHighlighterGhsvs
 
 					if (!empty($attribs['class']))
 					{
-						$hasLang = 
+						$hasLang =
 						self::strposCheckForLanguageClass($attribs['class'], $supportLang);
 					}
 
@@ -512,10 +526,10 @@ class PrismHighlighterGhsvs
 						!$hasLang
 						&& ($ext = strtolower(File::getExt($attribs[$fileAttribute][0])))
 						&& isset($aliasLanguageMap[$ext])
-					){
+					) {
 						$filesToLoad['mustLanguages'][] = $aliasLanguageMap[$ext]['alias'];
 					}
-					
+
 					// Add toolbar?
 					if (isset($attribs['data-download-link']))
 					{
@@ -530,18 +544,20 @@ class PrismHighlighterGhsvs
 						$replace['what'][] = $fileAttribute . '="' . $attribs['data-src'][0] . '"';
 						$replace['with'][] = $fileAttribute . '="' . Uri::root(true) . '/'
 							. $attribs['data-src'][0] . '"';
-		}
+					}
 				} // foreach($collectPreAttribs
 			} // foreach results
 		} //if (count($results))
-			
+
 		if (!$collectPreAttribs)
 		{
 			unset($plgConfigurations[$plugin]);
-		return false;
-	}
 
-		$collectAttribs = \array_merge($collectAttribs, $collectPreAttribs);
+			return false;
+		}
+
+		$collectAttribs = array_merge($collectAttribs, $collectPreAttribs);
+
 		return true;
 	}
 
@@ -554,28 +570,15 @@ class PrismHighlighterGhsvs
 		$plugin,
 		$languages,
 		&$filesToLoad
-	){
+	) {
 		if (
-			($arrayKeys = \array_keys($filesToLoad['plugin'], $plugin))
-			&& !\array_intersect(
+			($arrayKeys = array_keys($filesToLoad['plugin'], $plugin))
+			&& !array_intersect(
 				$languages,
 				$filesToLoad['language']
 			)
-		){
+		) {
 			unset($filesToLoad['plugin'][ $arrayKeys[0] ]);
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

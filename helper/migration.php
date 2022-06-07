@@ -36,7 +36,7 @@ $replace = [
 foreach ($articles as $key => $article)
 {
 	$checks = ['introtext', 'fulltext'];
-	
+
 	$show = false;
 
 	foreach ($checks as $check)
@@ -50,10 +50,10 @@ foreach ($articles as $key => $article)
 				&& strpos($text, $tag_ . ' class=\'brush:') === false
 				&& strpos($text, $tag_ . ' class=brush:') === false
 			)
-		){
+		) {
 			continue;
 		}
-		
+
 		/*
 		0 : uninteressant
 		1 : <pre .... >
@@ -61,7 +61,7 @@ foreach ($articles as $key => $article)
 		3: language Alias
 		4: Content innerhalb pre
 		*/
-		
+
 		if (!preg_match_all($muster, $text, $foundBrushes, PREG_SET_ORDER))
 		{
 			continue;
@@ -71,7 +71,7 @@ foreach ($articles as $key => $article)
 		{
 			#echo ' 4654sd48sa7d98sD81s8d71dsa <pre>' . print_r($found, true) . '</pre>';exit;
 			$alias = $found[3];
-			
+
 			if (!isset($json[$alias]))
 			{
 				$alias_ = $replace[$alias];
@@ -81,12 +81,12 @@ foreach ($articles as $key => $article)
 			{
 				$languageClass = 'language-' . $alias;
 			}
-			
+
 			$foundBrushes[$key][1] = str_replace(
-				array(
+				[
 					'brush:' . $alias . ';',
-					'brush:' . $alias
-				),
+					'brush:' . $alias,
+				],
 				$languageClass . ' line-numbers"',
 				$foundBrushes[$key][1]
 			);
@@ -94,65 +94,65 @@ foreach ($articles as $key => $article)
 			if (strpos($foundBrushes[$key][1], 'highlight') !== false)
 			{
 				$foundBrushes[$key][1] = str_replace('highlight: [', 'highlight:[', $foundBrushes[$key][1]);
-				
+
 				$muster2 = '/highlight:\[(.*?)\]/';
 
 				preg_match($muster2, $foundBrushes[$key][1], $highlights);
-#echo ' 4654sd48sa7d98sD81s8d71dsa <pre>' . print_r($highlights, true) . '</pre>' . PHP_EOL . PHP_EOL;#exit;
-				$newhighlite = 'data-line="' . $highlights[1] .'"';
-#echo ' 4654sd48sa7d98sD81s8d71dsa <pre>' . print_r($newhighlite, true) . '</pre>' . PHP_EOL . PHP_EOL;#exit;				
+				#echo ' 4654sd48sa7d98sD81s8d71dsa <pre>' . print_r($highlights, true) . '</pre>' . PHP_EOL . PHP_EOL;#exit;
+				$newhighlite = 'data-line="' . $highlights[1] . '"';
+				#echo ' 4654sd48sa7d98sD81s8d71dsa <pre>' . print_r($newhighlite, true) . '</pre>' . PHP_EOL . PHP_EOL;#exit;
 				$foundBrushes[$key][1] = str_replace(
-					array(
+					[
 						$highlights[0] . ';',
 						$highlights[0],
-					),
-					array(
+					],
+					[
 					$newhighlite,
 					$newhighlite,
-					),
+					],
 					$foundBrushes[$key][1]
 				);
 			}
-			
+
 			if (strpos($foundBrushes[$key][1], 'first-line') !== false)
 			{
 				$foundBrushes[$key][1] = str_replace('first-line: ', 'first-line:', $foundBrushes[$key][1]);
-				
+
 				$muster3 = '/first-line:(\d*)/';
 
 				preg_match($muster3, $foundBrushes[$key][1], $firstlines);
 
-				$newfl = 'data-start="' . $firstlines[1] .'"';
+				$newfl = 'data-start="' . $firstlines[1] . '"';
 				$foundBrushes[$key][1] = str_replace(
-					array(
+					[
 						$firstlines[0] . ';',
 						$firstlines[0],
-					),
-					array(
+					],
+					[
 					$newfl,
 					$newfl,
-					),
+					],
 					$foundBrushes[$key][1]
 				);
 			}
-			
+
 			$foundBrushes[$key][1] = str_replace('title: ', 'title=', $foundBrushes[$key][1]);
 			$foundBrushes[$key][1] = str_replace('""', '"', $foundBrushes[$key][1]);
 			$foundBrushes[$key][1] = str_replace('\'"', "'", $foundBrushes[$key][1]);
-			
+
 			$new = $foundBrushes[$key][1] . '<code>' . $foundBrushes[$key][4] . '</code></pre>';
-			
+
 			// PROTOKOLL für abschließenden Check!!!
 			file_put_contents(
 				JPATH_SITE . '/migration.log',
-				$article->id . ':' . $article->title . PHP_EOL . $foundBrushes[$key][1]. PHP_EOL. PHP_EOL,
+				$article->id . ':' . $article->title . PHP_EOL . $foundBrushes[$key][1] . PHP_EOL . PHP_EOL,
 				FILE_APPEND
 			);
-			
+
 			$show = true;
 			$article->$check = str_replace($foundBrushes[$key][0], $new, $article->$check);
 		} //foreach foundBrushes
-		
+
 		if ($show)
 		{
 			#echo " 4654sd48s $article->title <pre>" . print_r($article->$check, true) . '</pre>' . PHP_EOL;#exit;

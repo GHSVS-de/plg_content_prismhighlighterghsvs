@@ -19,13 +19,11 @@
 
 defined('_JEXEC') or die;
 
-use Joomla\CMS\Factory;
 use Joomla\CMS\Installer\InstallerScript;
 use Joomla\CMS\Log\Log;
 
 class plgContentPrismHighlighterGhsvsInstallerScript extends InstallerScript
 {
-
 	/**
 	 * A list of files to be deleted with method removeFiles().
 	 *
@@ -83,6 +81,7 @@ class plgContentPrismHighlighterGhsvsInstallerScript extends InstallerScript
 					return false;
 				}
 			}
+
 			if (trim((string) $manifest->allowDowngrades))
 			{
 				$this->allowDowngrades = true;

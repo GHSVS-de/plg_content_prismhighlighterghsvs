@@ -3,7 +3,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormHelper;
 
 FormHelper::loadFieldClass('list');
@@ -27,7 +26,7 @@ class plgContentPrismHighlighterGhsvsFormFieldStylesheets extends JFormFieldList
 	 * @var    array
 	 * @since  3.2
 	 */
-	protected static $options = array();
+	protected static $options = [];
 
 	/**
 	 * Method to get the options to populate list
@@ -39,16 +38,16 @@ class plgContentPrismHighlighterGhsvsFormFieldStylesheets extends JFormFieldList
 	protected function getOptions()
 	{
 		\JLoader::register('PrismHighlighterGhsvs', dirname(__DIR__) . '/helper.php');
-		
+
 		$coreStyleSheets = \PrismHighlighterGhsvs::getCoreStylesheets();
 		$hash = md5($this->element);
 
 		if (!isset(static::$options[$hash]))
 		{
 			static::$options[$hash] = parent::getOptions();
-			
-			$options = array();
-			
+
+			$options = [];
+
 			foreach ($coreStyleSheets as $value => $name)
 			{
 				$do = new \stdClass;
@@ -58,6 +57,7 @@ class plgContentPrismHighlighterGhsvsFormFieldStylesheets extends JFormFieldList
 			}
 			static::$options[$hash] = array_merge(static::$options[$hash], $options);
 		}
+
 		return static::$options[$hash];
 	}
 }

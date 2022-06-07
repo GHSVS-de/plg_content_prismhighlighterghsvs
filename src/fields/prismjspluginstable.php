@@ -22,7 +22,7 @@ class JFormFieldPrismJsPluginsTable extends FormField
 		$title = $this->element['label'] ? (string) $this->element['label'] : ($this->element['title'] ? (string) $this->element['title'] : '');
 		$heading = $this->element['heading'] ? (string) $this->element['heading'] : 'h4';
 
-		// ToDo: 
+		// ToDo:
 
 		\JLoader::register('SyntaxhighlighterGhsvsHelper', dirname(__DIR__) . '/helper.php');
 
@@ -32,7 +32,7 @@ class JFormFieldPrismJsPluginsTable extends FormField
 		}
 		else
 		{
-			$table = array('<table class="table table-striped table-bordered">');
+			$table = ['<table class="table table-striped table-bordered">'];
 
 			foreach ($description as $brush => $aliases)
 			{
@@ -48,7 +48,7 @@ class JFormFieldPrismJsPluginsTable extends FormField
 		$class = !empty($this->class) ? ' class="' . $this->class . '"' : '';
 		$close = (string) $this->element['close'];
 
-		$html = array();
+		$html = [];
 
 		if ($close)
 		{
@@ -58,6 +58,7 @@ class JFormFieldPrismJsPluginsTable extends FormField
 
 		$html[] = !empty($title) ? '<' . $heading . '>' . Text::_($title) . '</' . $heading . '>' : '';
 		$html[] = !empty($description) ? $description : '';
+
 		return '</div><div ' . $class . '>' . implode('', $html);
 	}
 

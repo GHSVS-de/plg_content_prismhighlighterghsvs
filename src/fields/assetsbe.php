@@ -13,7 +13,6 @@ Expects backend.css and/or backend.js in relative media path of $basepath
 
 defined('JPATH_PLATFORM') or die;
 
-use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\HTML\HTMLHelper;
 
@@ -38,12 +37,13 @@ class plgContentPrismHighlighterGhsvsFormFieldAssetsbe extends FormField
 
 		if ($loadcss !== 'false')
 		{
-			HTMLHelper::_('stylesheet',
+			HTMLHelper::_(
+				'stylesheet',
 				$file . '.css',
-				array(
+				[
 					'relative' => true,
 					'version' => 'auto',
-				)
+				]
 			);
 		}
 
@@ -54,14 +54,16 @@ class plgContentPrismHighlighterGhsvsFormFieldAssetsbe extends FormField
 
 		if ($loadjs !== 'false')
 		{
-			HTMLHelper::_('script',
+			HTMLHelper::_(
+				'script',
 				$file . '.js',
-				array(
+				[
 					'relative' => true,
 					'version' => 'auto',
-				)
+				]
 			);
 		}
+
 		return '';
 	}
 

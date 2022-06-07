@@ -31,7 +31,7 @@ class JFormFieldLanguagesandaliases extends FormField
 		}
 		else
 		{
-			$table = array('<table class="table table-striped table-bordered">');
+			$table = ['<table class="table table-striped table-bordered">'];
 
 			foreach ($description as $brush => $aliases)
 			{
@@ -47,7 +47,7 @@ class JFormFieldLanguagesandaliases extends FormField
 		$class = !empty($this->class) ? ' class="' . $this->class . '"' : '';
 		$close = (string) $this->element['close'];
 
-		$html = array();
+		$html = [];
 
 		if ($close)
 		{
@@ -57,6 +57,7 @@ class JFormFieldLanguagesandaliases extends FormField
 
 		$html[] = !empty($title) ? '<' . $heading . '>' . Text::_($title) . '</' . $heading . '>' : '';
 		$html[] = !empty($description) ? $description : '';
+
 		return '</div><div ' . $class . '>' . implode('', $html);
 	}
 
