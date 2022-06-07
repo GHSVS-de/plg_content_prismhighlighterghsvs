@@ -2,8 +2,8 @@
 	"name": "plg_content_prismhighlighterghsvs",
 	"nameReal": "plg_content_prismhighlighterghsvs",
 	"filename": "prismhighlighterghsvs",
-	"version": "2022.04.18",
-	"versionCompare": "2022.03.15",
+	"version": "2022.06.08",
+	"versionCompare": "2022.04.18",
 	"update": {
 		"type": "plugin",
 		"folder": "content",
@@ -34,8 +34,8 @@
 		"lastTests": [
 			"PHP 8.0",
 			"PHP 7.4",
-			"Joomla 3.10.6",
-			"Joomla 4.1.0",
+			"Joomla 3.10",
+			"Joomla 4.1",
 			"Vivaldi",
 			"Firefox"
 		]
@@ -87,14 +87,12 @@
 		"prismjs": "^1.28.0"
 	},
 	"devDependencies": {
-		"adm-zip": "0.5.9",
+		"adm-zip": "^0.5.9",
 		"picocolors": "^1.0.0",
 		"clean-css": "^5.2.4",
-		"fs-extra": "10.1.0",
-		"path": "^0.12.7",
+		"fs-extra": "^10.1.0",
 		"recursive-readdir": "^2.2.2",
-		"rimraf": "3.0.2",
-		"standard-version": "^9.3.2"
+		"rimraf": "^3.0.2"
 	},
 	"peerDependencies": {},
 	"browserslist": []
