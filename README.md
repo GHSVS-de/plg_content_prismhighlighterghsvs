@@ -64,9 +64,3 @@ composer install
 - Create new release with new tag.
 - Get download link for new `dist/plg_blahaba_blubber...zip` **from newly created tag branch** and add to release description.
 - Extracts(!) of the update and changelog XML for update and changelog servers are in `./dist` as well. Check for necessary additions! Then copy/paste.
-
-## In experimental state (CHANGELOG.md)
-Creates a `dist/CHANGELOG.md` if you want.
-- `Fetch origin` in GitHub Desktop to include newest release locally!
-- `cd build`
-- `php git-changelog.php`
