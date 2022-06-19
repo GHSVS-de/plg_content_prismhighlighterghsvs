@@ -694,7 +694,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 		########## Plugin download-button. Unload? ##########
 		if (
-			!$fileHighlightFound
+			empty($fileHighlightFound)
 			&& ($arrayKeys = array_keys($this->filesToLoad['plugin'], 'download-button'))
 		) {
 			unset($this->filesToLoad['plugin'][$arrayKeys[0]]);
