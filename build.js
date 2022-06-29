@@ -253,13 +253,7 @@ let to = "";
 		)
 	);
 
-	if (!(await fse.exists("./dist")))
-	{
-		await fse.mkdir("./dist"
-		).then(
-			answer => console.log(pc.yellow(pc.bold(`Created "./dist".`)))
-		);
-  }
+	await helper.mkdir('./dist');
 
 	const zipFilename = `${name}-${version}_${versionSub}.zip`;
 
