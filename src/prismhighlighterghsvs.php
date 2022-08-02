@@ -292,6 +292,23 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 					else
 					{
 						$collectAttribs[$key]['isInlineCode'] = 1;
+
+						/*
+						Puuuuh! A harakiri action. The final removement follows later. See "Rough house cleaning.".
+						Hintergrund: Ich verwende häufig Inline-<code> mit selbst definierten Klassen
+						<code class="code-filename">. Die führen derzeit dazu, dass Basis-CSS geladen wird, obwohl gar
+						nicht benötigt. Hier ist einfach die früheste Stelle, um einzugreifen.
+						Es werden nur Inline-<code> durchgelassen, die eine lang[uage]-xy-Klasse haben.
+						*/
+						if (
+							$this->params->get('removeInlineWithoutLangClass', 1) === 1
+							&& isset($collectAttribs[$key]['class'])
+							&& PrismHighlighterGhsvs::strposCheckForLanguageClass(
+								' ' . implode(' ', $collectAttribs[$key]['class']) . ' ',
+								$supportLang) === false
+						) {
+							unset($collectAttribs[$key]['class']);
+						}
 					}
 				}
 
