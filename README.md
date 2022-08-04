@@ -6,8 +6,14 @@
 - Uses PHP library [matthiasmullie/minify](https://github.com/matthiasmullie/minify).
 
 # Be aware
-- **Work in (long) progress!!**
-- But works on my public, private website for a long time now.
+I have programmed this Joomla extension according to my personal needs for my own website. The configuration can be more or less complicated.
+
+Questions in German or English can be directed to me at any time.
+- https://github.com/GHSVS-de/plg_content_prismhighlighterghsvs/issues
+- https://ghsvs.de/kontakt-aufnehmen-mit-ghsvs
+
+There is also an undocumented editor button plugin for this content plugin, for which the above also applies: "Programmed for my needs", "Ask!".
+- https://github.com/GHSVS-de/plg_editors-xtd_prismhighlighterghsvs
 
 # Prism docs/infos
 - [Supported languages and aliases](https://prismjs.com/index.html#supported-languages)
