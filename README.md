@@ -1,4 +1,4 @@
-# plg_content_prismhighlighterghsvs
+# PLG_CONTENT_PRISMHIGHLIGHTERGHSVS
 - Joomla content plugin. Syntax highlightning of code snippets.
 - Uses JS library  [PrismJS/prism](https://github.com/PrismJS/prism).
 - Uses JS library  [zenorocha/clipboard.js](https://github.com/zenorocha/clipboard.js).
