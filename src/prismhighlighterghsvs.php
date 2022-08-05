@@ -222,6 +222,8 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 			if (count($results))
 			{
+				$removeInlineWithoutLangClass = $this->params->get('removeInlineWithoutLangClass', 1) === 1;
+
 				foreach ($results as $key => $result)
 				{
 					// Let's store class and other attributes of <code> element in array $collectAttribs.
@@ -301,7 +303,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 						Es werden nur Inline-<code> durchgelassen, die eine lang[uage]-xy-Klasse haben.
 						*/
 						if (
-							$this->params->get('removeInlineWithoutLangClass', 1) === 1
+							$removeInlineWithoutLangClass === true
 							&& isset($collectAttribs[$key]['class'])
 							&& PrismHighlighterGhsvs::strposCheckForLanguageClass(
 								' ' . implode(' ', $collectAttribs[$key]['class']) . ' ',
