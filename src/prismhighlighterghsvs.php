@@ -548,10 +548,8 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		} // foreach ($collectAttribs as $key => $attribs) END
 
 		// autoloader makes no sense if there is no language class (= no language found).
-		if (
-			$howToLoad === 'autoloader'
-			&& $this->filesToLoad['language']
-		) {
+		if ($howToLoad === 'autoloader' && $this->filesToLoad['language'])
+		{
 			$this->filesToLoad['plugin'][] = 'autoloader';
 			$this->filesToLoad['scriptDeclaration'][]
 				= "Prism.plugins.autoloader.languages_path = " . JUri::root(true) . $this->basepath . "/prismjs/components';";
