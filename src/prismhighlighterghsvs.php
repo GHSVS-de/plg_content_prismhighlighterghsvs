@@ -553,7 +553,6 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			$this->filesToLoad['plugin'][] = 'autoloader';
 			$this->filesToLoad['scriptDeclaration'][]
 				= "Prism.plugins.autoloader.languages_path = " . Uri::root(true) . $this->basepath . "/prismjs/components';";
-
 			$this->filesToLoad['language'] = [];
 		}
 
