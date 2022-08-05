@@ -524,8 +524,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 				Whyever. I ignore that shit. Only valid languages go through. */
 				if (isset($attribs['hasLang']))
 				{
-
-########## Plugin command-line ##########
+					########## Plugin command-line ##########
 					// Inconsistently needs explicitly language- not lang- class.
 					if (strpos($classesAll, ' language-') !== false)
 					{
