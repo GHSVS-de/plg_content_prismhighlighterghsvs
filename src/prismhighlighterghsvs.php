@@ -481,8 +481,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			// Only <pre><code> combinations.
 			if ($attribs['isInlineCode'] === 0)
 			{
-
-########## Plugin treeview ##########
+				########## Plugin treeview ##########
 				if (strpos($classesAll, ' language-treeview ') !== false)
 				{
 					$this->filesToLoad['plugin'][] = 'treeview';
