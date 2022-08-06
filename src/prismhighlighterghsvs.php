@@ -443,7 +443,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			$collectAttribs[$key]['classesAll'] = $classesAll;
 		}
 
-		if ($theme = $this->params->get('theme', 'prism'))
+		if ($theme = $this->params->get('theme', 'prism.min.css'))
 		{
 			$this->filesToLoad['css'] = (array) $theme;
 		}
