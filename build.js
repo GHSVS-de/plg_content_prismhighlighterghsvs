@@ -227,6 +227,8 @@ let to = "";
 		)
 	);
 
+	await helper.gzip([to]);
+
 	await console.log(pc.cyan(pc.bold(`Be patient! Composer actions!`)));
 
 	// Orphans:
