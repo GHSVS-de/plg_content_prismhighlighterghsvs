@@ -139,13 +139,12 @@
 			<fieldset name="advanced"
 				label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_FIELD_LABEL_ADVANCEDPARAMS">
 
-				<field name="theme" type="filelist" default="prism"
+				<field name="theme" type="filelist" default="prism.min.css"
 					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_STYLESHEET"
 					description=""
 					filter="\.css$" fileFilter="\.css$"
 					hide_default="true"
 					hide_none="true"
-					stripext="true"
 					directory="media/plg_content_prismhighlighterghsvs/css/prismjs/themes">
 						<option value="0">JNONE</option>
 				</field>
