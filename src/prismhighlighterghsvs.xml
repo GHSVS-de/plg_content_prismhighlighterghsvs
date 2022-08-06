@@ -182,16 +182,30 @@
 						<option value="1">PRE and CODE tags</option>
 				</field>
 
-				<field name="howToLoadSpacer" type="note" close="true" class="alert"
+				<field name="howToLoadSpacer" type="note" close="true" class="alert alert-info"
 					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_HOWTOLOAD"
 					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_HOWTOLOAD_DESC"/>
 
 				<field name="howToLoad" type="list" default="combined" filter="string"
-					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_HOWTOLOAD"
-					description="">
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_HOWTOLOAD">
 						<option value="autoloader"/>
 						<option value="combined"/>
 						<option value="singleFile"/>
+				</field>
+
+				<field name="wamWeightSpacer" type="note" close="true" class="alert alert-info"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_WAMWEIGHT"
+					description="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_WAMWEIGHT_DESC"/>
+
+				<field name="wamWeight" type="text" default="5" filter="integer"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_WAMWEIGHT">
+				</field>
+
+				<field name="gzFiles" type="list" default="1" filter="integer"
+					showon="howToLoad:combined"
+					label="PLG_CONTENT_PRISMHIGHLIGHTERGHSVS_GZFILES">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
 				</field>
 
 				<field name="removeInlineWithoutLangClassSpacer" type="note" close="true"

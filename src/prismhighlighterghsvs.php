@@ -17,6 +17,12 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 	protected $app;
 
+	// Also usable in other files via plgContentPrismHighlighterGhsvs::$isJ3.
+	public static $isJ3 = true;
+
+	// Used in other files via $wa =  plgContentPrismHighlighterGhsvs::getWa().
+	protected static $wa = null;
+
 	/**
 	 * Switch for decision if it's worth to proceed.
 	 *
@@ -48,6 +54,16 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 	// Let's hope that it doesn't need other languages.
 	// To be fixed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	protected $count = 0;
+
+	function __construct(&$subject, $config = [])
+	{
+		// NEIN!!!!!!!!!!!!!!!! Das darfst nicht in __construct!!!!
+		#if (Factory::getDocument()->getType() !== 'html')
+
+		parent::__construct($subject, $config);
+
+		self::$isJ3 = version_compare(JVERSION, '4', 'lt');
+	}
 
 	public function onContentPrepare($context, &$article, &$params, $page = 0)
 	{
@@ -122,6 +138,8 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 		// autoloader | combined | singleFile
 		$howToLoad = $this->params->get('howToLoad', 'combined');
+
+		$wamWeight = (int) $this->params->get('wamWeight', 5);
 
 		/* Field 'userMustSelect'. Some Prism plugins cannot be detected
 		automatically by this Joomla plugin.
@@ -552,7 +570,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		{
 			$this->filesToLoad['plugin'][] = 'autoloader';
 			$this->filesToLoad['scriptDeclaration'][]
-				= "Prism.plugins.autoloader.languages_path = " . Uri::root(true) . $this->basepath . "/prismjs/components';";
+				= "Prism.plugins.autoloader.languages_path = " . "'" . Uri::root() . $this->basepath . "/js/prismjs/components/';";
 			$this->filesToLoad['language'] = [];
 		}
 
@@ -728,22 +746,24 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 		}
 		########## /Plugin toolbar ##########
 
+		$wa = self::getWa();
+		$jsFileName = $cssFileName = $doFiles['css'] = $doFiles['js'] = [];
+
+		// Kept for isJ2.
 		$min = JDEBUG ? '' : '.min';
-		$version = JDEBUG ? time() : 'auto';
-		$jsFileName = $cssFileName = $doCss = $doJs = [];
+		$version = JDEBUG ? time() : PrismHighlighterGhsvs::getMediaVersion();
 
 		// Identify paths of CSS files.
-
 		$paths = [
-			'css' => 'themes/{id}.css',
-			'requireCss' => 'plugins/{id}/prism-{id}.css',
+			'css' => 'themes/{id}',
+			'requireCss' => 'plugins/{id}/prism-{id}',
 		];
 
 		foreach ($paths as $what => $path)
 		{
 			foreach ($this->filesToLoad[$what] as $id)
 			{
-				$doCss[] = $this->basepath . '/css/prismjs/' . str_replace('{id}', $id, $path);
+				$doFiles['css'][] = $this->basepath . '/css/prismjs/' . str_replace('{id}', $id, $path);
 				$cssFileName['first'][] = strtoupper($what[0]) . $id[0];
 				$cssFileName['id'][] = $id;
 			}
@@ -751,41 +771,30 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 		if ($customCssFile = trim($this->params->get('customCssFile', '')))
 		{
-			$doCss[] = str_replace('$template', $this->app->getTemplate(), $customCssFile);
+			$doFiles['css'][] = str_replace('$template', $this->app->getTemplate(), $customCssFile);
 			$cssFileName['first'][] = 'R' . $customCssFile[0];
 			$cssFileName['id'][] = $customCssFile;
 		}
 
-		// Identify paths of JS files.
-
-		// für ggf. später relative => true, hier ein if(). ToDo: Auch bei CSS.
-		$folder = '/js';
-
+		// Build paths of JS files.
 		$paths = [
-			'requireVendorJs' => $this->basepath . '{folder}/{id}' . $min . '.js',
-			'language' => $this->basepath . '{folder}/prismjs/components/prism-{id}' . $min . '.js',
-			'plugin' => $this->basepath . '{folder}/prismjs/plugins/{id}/prism-{id}' . $min . '.js',
+			'requireVendorJs' => $this->basepath . '{folder}/{id}',
+			'language' => $this->basepath . '{folder}/prismjs/components/prism-{id}',
+			'plugin' => $this->basepath . '{folder}/prismjs/plugins/{id}/prism-{id}',
 		];
 
 		foreach ($paths as $what => $path)
 		{
 			foreach ($this->filesToLoad[$what] as $id)
 			{
-				$doJs[] = str_replace(['{folder}', '{id}'], [$folder, $id], $path);
+				$doFiles['js'][] = str_replace(['{folder}', '{id}'], ['/js', $id], $path);
 				$jsFileName['first'][] = strtoupper($what[0]) . $id[0];
 				$jsFileName['id'][] = $id;
 			}
 		}
 
-		$imploder = '';
-
-		if (!$min)
-		{
-			$imploder = "\n";
-		}
-
 		$this->filesToLoad['scriptDeclaration'] =
-			implode($imploder, $this->filesToLoad['scriptDeclaration']) . ';';
+			implode('', $this->filesToLoad['scriptDeclaration']) . ';';
 
 		if ($howToLoad === 'combined')
 		{
@@ -795,99 +804,136 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			sort($jsFileName['first'], SORT_NATURAL | SORT_FLAG_CASE);
 			sort($cssFileName['first'], SORT_NATURAL | SORT_FLAG_CASE);
 
-			$cssFileName = md5(implode('', $cssFileName['first'])) . '_'
-				. md5(implode('_', $cssFileName['id'])) . $min . '.css';
-			$jsFileName = md5(implode('', $jsFileName['first'])) . '_'
-				. md5(implode('_', $jsFileName['id']) . $this->filesToLoad['scriptDeclaration'])
-				. $min . '.js';
+			$FileName = [
+			'css' => md5(implode('', $cssFileName['first'])) . '_' . md5(implode('_', $cssFileName['id'])),
+			'js'  => md5(implode('', $jsFileName['first'])) . '_' . md5(implode('_', $jsFileName['id'])
+				. $this->filesToLoad['scriptDeclaration'])
+			];
 
-			$cssFileRel = $this->basepath . '/css/_combiByPlugin/' . $cssFileName;
-			$jsFileRel = $this->basepath . '/js/_combiByPlugin/' . $jsFileName;
-			$cssFileAbs = JPATH_SITE . '/' . $this->basepath . '/css/_combiByPlugin/' . $cssFileName;
-			$jsFileAbs = JPATH_SITE . '/' . $this->basepath . '/js/_combiByPlugin/' . $jsFileName;
-
-			if (!is_file($cssFileAbs))
+			foreach (['css', 'js'] as $job)
 			{
-				if ($min)
+				$FileRel = $this->basepath . '/' . $job . '/_combiByPlugin/'
+					. $FileName[$job];
+				$FileAbs = JPATH_SITE . '/' . $FileRel;
+				$HashFile = $FileAbs . '_' . $job . '.ghsvsHash';
+				$contents = [];
+				$doTotal = ($job === 'js' && $this->filesToLoad['scriptDeclaration'])
+					? count($doFiles[$job]) : 0;
+
+				if (!is_file($HashFile))
 				{
-					$minifier = new Minify\CSS();
-
-					// 0:Protection against image embedding and shit.
-					$minifier->setMaxImportSize(0);
-
-					foreach ($doCss as $file)
+					if ($job === 'css')
 					{
-						$minifier->add(JPATH_SITE . '/' . $file);
+						$minifier = new Minify\CSS();
+
+						// 0:Protection against image embedding and things.
+						$minifier->setMaxImportSize(0);
+					}
+					else
+					{
+						$minifier = new Minify\JS();
 					}
 
-					$minifier->minify($cssFileAbs);
-				}
-				else
-				{
-					$contents = [];
-
-					foreach ($doCss as $file)
+					foreach ($doFiles[$job] as $count => $file)
 					{
-						$currentFile = JPATH_SITE . '/' . $file;
+						$currentFile_ = JPATH_SITE . '/' . $file;
+						$currentFile = PrismHighlighterGhsvs::checkAndAddExt($currentFile_, $job);
 
 						if (is_file($currentFile))
 						{
 							$contents[] = "/*\n" . $file . "\n*/";
 							$contents[] = file_get_contents($currentFile);
+
+							// Prefer already minified ones. JS result will become much smaller.
+							if (is_file($currentFile_ . '.min.' . $job))
+							{
+								$currentFile = $currentFile_ . '.min.' . $job;
+							}
+
+							$minifier->add($currentFile);
+						}
+
+						// This maust be outside is_file($currentFile).
+						if ($doTotal && ($count + 1) === $doTotal)
+						{
+							$contents[] = "/*\n Plugins Configurations \n*/";
+							$contents[] = $this->filesToLoad['scriptDeclaration'];
+
+							$minifier->add($this->filesToLoad['scriptDeclaration']);
+						}
+
+						// Save unminified file.
+						file_put_contents($FileAbs . '.' . $job, implode("\n", $contents));
+
+						// Save minified CSS file.
+						$minifier->minify($FileAbs . '.min.' . $job);
+
+						// Save gz of minified file.
+						$gzFilename = $FileAbs . '.min.' . $job . '.gz';
+
+						if ($this->params->get('gzFiles', 1) === 1)
+						{
+							$minifier->gzip($gzFilename);
+						}
+						elseif (is_file($gzFilename))
+						{
+							unlink($gzFilename);
 						}
 					}
-					file_put_contents($cssFileAbs, implode("\n", $contents));
+
+					// Save ghsvsHash file.
+					file_put_contents($HashFile, $FileRel);
 				}
+
+				// $min only kept for isJ3. WAM doesn't care.
+				$doFiles[$job] = [$FileRel . $min . '.' . $job];
 			}
-
-			$doCss = [$cssFileRel];
-
-			if (!is_file($jsFileAbs))
-			{
-				$contents = [];
-
-				foreach ($doJs as $file)
-				{
-					$currentFile = JPATH_SITE . '/' . $file;
-
-					if (is_file($currentFile))
-					{
-						$contents[] = "/*\n" . $file . "\n*/";
-						$contents[] = file_get_contents($currentFile);
-					}
-				}
-
-				if ($this->filesToLoad['scriptDeclaration'])
-				{
-					if ($min)
-					{
-						$minifier = new Minify\JS($this->filesToLoad['scriptDeclaration']);
-						$this->filesToLoad['scriptDeclaration'] = $minifier->minify();
-					}
-
-					$contents[] = "/*\n Plugins Configurations \n*/";
-					$contents[] = $this->filesToLoad['scriptDeclaration'];
-				}
-
-				file_put_contents($jsFileAbs, implode(";\n", $contents));
-			}
-
-			$doJs = [$jsFileRel];
 		}
 
-		$attribs = ['version' => 'auto'];
+		$attribs = ['version' => $version];
+		$weight = $wamWeight;
 
-		foreach ($doCss as $file)
+		foreach ($doFiles['css'] as $file)
 		{
-			HTMLHelper::_('stylesheet', $file, $attribs);
+			$file = PrismHighlighterGhsvs::checkAndAddExt($file, 'css', $min);
+
+			if ($wa)
+			{
+				$waName = 'plg_content_prismhighlighterghsvs.' . str_replace('/', '.', $file);
+				$wa->registerStyle(
+					$waName,
+					$file,
+					['version' => $version, 'weight' => $weight++],
+				)->useStyle($waName);
+			}
+			else
+			{
+				HTMLHelper::_('stylesheet', $file, $attribs);
+			}
 
 			// Schlechte Krücke, um doppelten Lauf zu unterbinden. Bspw. Modul
 			$this->count++;
 		}
 
-		foreach ($doJs as $file)
+		$weight = $wamWeight;
+
+		foreach ($doFiles['js'] as $file)
 		{
-			HTMLHelper::_('script', $file, $attribs);
+			$file = PrismHighlighterGhsvs::checkAndAddExt($file, 'js', $min);
+
+			if ($wa)
+			{
+				$waName = 'plg_content_prismhighlighterghsvs.' . str_replace('/', '.', $file);
+				$wa->registerScript(
+					$waName,
+					$file,
+					['version' => $version, 'weight' => $weight++],
+				)->useScript($waName);
+			}
+			else
+			{
+				HTMLHelper::_('script', $file, $attribs);
+			}
 
 			// Schlechte Krücke, um doppelten Lauf zu unterbinden. Bspw. Modul
 			$this->count++;
@@ -895,9 +941,21 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 
 		if ($howToLoad !== 'combined' && $this->filesToLoad['scriptDeclaration'])
 		{
-			Factory::getDocument()->addScriptDeclaration(
-				$this->filesToLoad['scriptDeclaration'] . ';'
-			);
+			if ($wa)
+			{
+				$wa->addInline(
+					'script',
+					$this->filesToLoad['scriptDeclaration'],
+					['name' => 'plg_content_prismhighlighterghsvs.scriptDeclaration']
+				);
+			}
+			else
+			{
+				Factory::getDocument()->addScriptDeclaration(
+					$this->filesToLoad['scriptDeclaration']
+				);
+			}
+
 
 			// Schlechte Krücke, um doppelten Lauf zu unterbinden. Bspw. Modul
 			$this->count++;
@@ -910,5 +968,16 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			// Schlechte Krücke, um doppelten Lauf zu unterbinden. Bspw. Modul
 			$this->count++;
 		}
+	}
+
+	public static function getWa()
+	{
+		if (self::$isJ3 === false && empty(self::$wa))
+		{
+			self::$wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+			self::$wa->getRegistry()->addExtensionRegistryFile('plg_content_prismhighlighterghsvs');
+		}
+
+		return self::$wa;
 	}
 }

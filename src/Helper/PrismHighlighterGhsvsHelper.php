@@ -581,4 +581,31 @@ class PrismHighlighterGhsvs
 			unset($filesToLoad['plugin'][ $arrayKeys[0] ]);
 		}
 	}
+
+	/*
+	Check if a file extension exists.
+	If not add it.
+	*/
+	public static function checkAndAddExt($file, $ext, $min = '')
+	{
+		$parts = explode('.', $file);
+
+		if (strtolower($parts[count($parts) - 1]) !== strtolower($ext))
+		{
+			$file .= $min . '.' . $ext;
+		}
+
+		return $file;
+	}
+
+	public static function getMediaVersion()
+	{
+		if (!isset(self::$loaded[__METHOD__]))
+		{
+			self::$loaded[__METHOD__] = json_decode(file_get_contents(
+				JPATH_SITE . '/' . self::$basepath . '/prismjs/package.json'))->version;
+		}
+
+		return self::$loaded[__METHOD__];
+	}
 }
