@@ -2,7 +2,7 @@
 const path = require('path');
 
 /* Configure START */
-const pathBuildKram = path.resolve("../buildKramGhsvs/build");
+const pathBuildKram = path.resolve("../buildKramGhsvs");
 const updateXml = `${pathBuildKram}/build/update.xml`;
 const changelogXml = `${pathBuildKram}/build/changelog.xml`;
 const releaseTxt = `${pathBuildKram}/build/release.txt`;
@@ -189,6 +189,7 @@ let to = "";
 	await helper.copy(from, to)
 
 	from = "./node_modules/prismjs/LICENSE";
+	to =`${target}/prismjs/LICENSE`;
 	await helper.copy(from, to)
 
 	const copyToDirs = [
