@@ -490,7 +490,7 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			$classesAll = $attribs['classesAll'];
 
 			########## Plugin match-braces ##########
-			if (strpos($classesAll, ' match-braces '))
+			if (strpos($classesAll, ' match-braces ') !== false)
 			{
 				$this->filesToLoad['plugin'][] = 'match-braces';
 			}
@@ -524,14 +524,14 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 						}
 					}
 				}
-				elseif (strpos($classesAll, ' diff-highlight '))
+				elseif (strpos($classesAll, ' diff-highlight ') !== false)
 				{
 					$this->filesToLoad['plugin'][] = 'diff-highlight';
 				}
 				########## /Plugin diff-highlight ##########
 
 				########## Plugin line-numbers ##########
-				if (strpos($classesAll, ' line-numbers '))
+				if (strpos($classesAll, ' line-numbers ') !== false)
 				{
 					$this->filesToLoad['plugin'][] = 'line-numbers';
 				}
