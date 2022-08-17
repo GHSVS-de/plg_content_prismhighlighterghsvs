@@ -25,3 +25,4 @@ src/vendor/matthiasmullie/minify/bin
 /dist/*.txt
 /dist/*.md
 _composer/vendor
+dist copy
