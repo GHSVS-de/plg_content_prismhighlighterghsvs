@@ -2,8 +2,8 @@
 	"name": "plg_content_prismhighlighterghsvs",
 	"nameReal": "plg_content_prismhighlighterghsvs",
 	"filename": "prismhighlighterghsvs",
-	"version": "2022.08.17",
-	"versionCompare": "2022.08.06",
+	"version": "2022.08.24",
+	"versionCompare": "2022.08.17",
 	"update": {
 		"type": "plugin",
 		"folder": "content",
@@ -52,7 +52,6 @@
 	"copyright": "(C) 2020, G@HService Berlin Neukölln, Volkmar Volli Schlothauer.",
 	"author": {
 		"name": "G@HService Berlin Neukölln, Volkmar Volli Schlothauer",
-		"email": "",
 		"url": "https://ghsvs.de"
 	},
 	"contributors": [
@@ -85,7 +84,7 @@
 	},
 	"dependencies": {
 		"clipboard": "^2.0.11",
-		"prismjs": "^1.28.0"
+		"prismjs": "^1.29.0"
 	},
 	"devDependencies": {
 		"recursive-readdir": "^2.2.2"
