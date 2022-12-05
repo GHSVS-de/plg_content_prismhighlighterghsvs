@@ -80,11 +80,11 @@ class plgContentPrismHighlighterGhsvs extends CMSPlugin
 			!$this->app->isClient('site')
 			|| (!$this->params->get('robots', 0) && $this->app->client->robot)
 			|| !in_array($context, $contexts)
-			|| !in_array($this->app->getInput()->get('view'), $views)
+			|| !in_array($this->app->input->get('view'), $views)
 			|| !isset($article->text)
 			|| !trim($article->text)
 			|| $this->app->getDocument()->getType() !== 'html'
-			|| $this->app->getInput()->getBool('print')
+			|| $this->app->input->getBool('print')
 		) {
 			$this->goOn = false;
 
