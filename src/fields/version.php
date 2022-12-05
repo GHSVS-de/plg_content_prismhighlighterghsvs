@@ -32,7 +32,7 @@ class plgContentPrismHighlighterGhsvsFormFieldVersion extends FormField
 		$query = $db->getQuery(true)
 		->select($db->qn('manifest_cache'))->from($db->qn('#__extensions'))
 		->where($db->qn('extension_id') . '='
-		. (int) Factory::getApplication()->input->get('extension_id'))
+		. (int) Factory::getApplication()->getInput()->get('extension_id'))
 		;
 		$db->setQuery($query);
 
