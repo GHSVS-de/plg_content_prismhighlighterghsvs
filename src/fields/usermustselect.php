@@ -1,7 +1,7 @@
 <?php
 #namespace Joomla\CMS\Form\Field;
 
-defined('JPATH_PLATFORM') or die;
+defined('_JEXEC') or die;
 
 use Joomla\CMS\Form\FormHelper;
 

@@ -36,7 +36,7 @@ Uses own JLayout to get rid of controls CSS class. JLayout is /plugins-directory
 
 */
 
-defined('JPATH_PLATFORM') or die;
+defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\Language\Text;
